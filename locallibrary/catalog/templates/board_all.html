@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-straight/css/uicons-bold-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/board.css' %}">
+    <link rel="stylesheet" href="{% static 'css/paging.css' %}">
+</head>
+<body>
+    <video src="{% static 'main.mp4' %}" muted autoplay loop></video>
+   
+    <section class="notice">
+        <header>
+            <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
+            <ul class="header_menu">
+                <li><a class="upper" href="{% url 'board' %}">Home</a></li>
+                <li><a class="upper" href="{% url 'board_all' %}">All</a></li>
+                <li><a class="upper" href="">Contact</a></li>
+                <li><a class="upper" href="">NEWS</a></li>
+                <li><a class="upper" href="">Q&A</a></li>
+                <li><a class="upper" id="logout-btn" href="{% url 'logout_view' %}"><i class="fi fi-ss-exit"></i></a></li>
+            </ul>
+        </header>
+        <div class="page-title">
+            <div class="container">
+                <h3><!-- 여백 --></h3>
+            </div>
+        </div>
+
+        <div id="board-search">
+            {% comment %} <p>Logged in as: Dr. {{ request.session.doc_name }} (ID: {{ request.session.doc_id }})</p>
+            <a href="{% url 'logout_view' %}"> Logout</a> {% endcomment %}
+            <div class="container">
+                <div class="search-window">
+                    <form id="search-form">
+                        <div class="search-wrap search-wrap-all" id="all_content">
+                            <label for="major" class="blind">진료과목</label>
+                            <select id="major" name="major" class="dropdown">
+                                <option value="" class"label">진료 과목</option>    
+                                <option value="흉부외과">흉부외과</option>
+                                <option value="신경외과">신경외과</option>
+                            </select>
+                            <label for="search_date_start" class="blind">Start Date</label>
+                            <input type="date" name="search_date_start" id="search_date_start" placeholder="Start Date">
+                            <label for="search_date_end" class="blind">End Date</label>
+                            <input type="date" name="search_date_end" id="search_date_end" placeholder="End Date">
+                            <label for="search_name" class="blind">Search Name</label>
+                            <input id="search_name" type="search" name="search_name" placeholder="Name">
+                            <button type="submit" class="btn btn-dark">Search</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div id="board-list">
+            <div class="container">
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="th-num">번호</th>
+                            <th scope="col" class="th-title">이름</th>
+                            <th scope="col" class="th-birth">생년월일</th>
+                            <th scope="col" class="th-date">등록일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patient-data">
+                        <!-- 환자 데이터가 동적으로 추가될 예정 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="board-pagination">
+            <div class="container">
+                <div class="pagination-window">
+                    <div class="page_wrap">
+                        <div class="page_nation" id="pagination">
+                            <a class="arrow pprev" href="#"><i class="fi fi-bs-angle-double-small-left"></i></a>
+                            <a class="arrow prev" href="#"><i class="fi fi-bs-angle-small-left"></i></a>
+                            <!-- 페이지 버튼들은 JavaScript를 통해 동적으로 추가될 예정입니다 -->
+                            <a class="arrow next" href="#"><i class="fi fi-bs-angle-small-right"></i></a>
+                            <a class="arrow nnext" href="#"><i class="fi fi-bs-angle-double-small-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var currentPage = 1;  // 현재 페이지를 추적
+        var totalPages = 1;  // 전체 페이지 수
+
+        function updateBoard(pageNumber) {
+            const search_date_start = $('#search_date_start').val();
+            const search_date_end = $('#search_date_end').val();
+            const search_name = $('#search_name').val();
+            const search_major = $('#major').val();
+            $.ajax({
+                url: '{% url "get_allpatient_data" %}',
+                type: 'GET',
+                data: {
+                    'page': pageNumber,
+                    'search_date_start': search_date_start,
+                    'search_date_end': search_date_end,
+                    'search_name': search_name,
+                    'search_major': search_major
+                },
+                success: function(data) {
+                    updatePage(data.patients, data.total_pages); // 데이터 업데이트
+                    currentPage = pageNumber;  // 현재 페이지 업데이트
+                    totalPages = data.total_pages;  // 전체 페이지 수 업데이트
+                }
+            });
+        }
+
+        function updatePage(patients, totalPagesCount) {
+            totalPages = totalPagesCount;  // 전체 페이지 수 업데이트
+            $('#patient-data').empty(); // 기존의 게시판 내용 비우기
+
+            patients.forEach(function(patient, index) {
+                var newRow = '<tr><td>' + ((currentPage - 1) * 5 + index + 1) + '</td>' +
+                             '<th class="title-align"><a href="/catalog/x-ray-2?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
+                             '<td>' + patient.birthdate + '</td>' +
+                             '<td>' + (patient.mir_data ? patient.mir_data.date : '') + '</td></tr>';
+                $('#patient-data').append(newRow);
+            });
+
+            var emptyRows = 5 - patients.length;
+            for (var i = 0; i < emptyRows; i++) {
+                var emptyRow = '<tr><td>&nbsp;</td>' +
+                            '<td>&nbsp;</td>' +
+                            '<td>&nbsp;</td>' +
+                            '<td>&nbsp;</td></tr>';
+                $('#patient-data').append(emptyRow);
+            }
+
+            updatePageButtons(totalPages);
+        }
+
+        function updatePageButtons(totalPages) {
+            var paginationElement = $('#pagination');
+            paginationElement.empty(); // 기존의 페이징 버튼들을 모두 비웁니다.
+
+            paginationElement.append('<a class="arrow pprev" href="#"><i class="fi fi-bs-angle-double-small-left"></i></a>');
+            paginationElement.append('<a class="arrow prev" href="#"><i class="fi fi-bs-angle-small-left"></i></a>');
+
+            for (var i = 1; i <= totalPages; i++) {
+                var pageLink = $('<a href="#" class="page-link">' + i + '</a>');
+                pageLink.data('page', i);
+                if (i == currentPage) {
+                    pageLink.addClass('active'); // 현재 페이지에 active 클래스 추가
+                }
+                pageLink.attr('href', '#'); // 페이지 번호에 해당하는 URL을 설정합니다.
+                paginationElement.append(pageLink);
+            }
+
+            paginationElement.append('<a class="arrow next" href="#"><i class="fi fi-bs-angle-small-right"></i></a>');
+            paginationElement.append('<a class="arrow nnext" href="#"><i class="fi fi-bs-angle-double-small-right"></i></a>');
+        }
+
+        $(document).ready(function() {
+            updateBoard(1); // 첫 번째 페이지 데이터 가져오기
+
+            $('#pagination').on('click', '.page-link', function(e) {
+                e.preventDefault();
+                var pageNumber = $(this).data('page');
+                updateBoard(pageNumber);
+            });
+
+            $('#pagination').on('click', '.pprev', function(e) {
+                e.preventDefault();
+                updateBoard(1);
+            });
+
+            $('#pagination').on('click', '.prev', function(e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    updateBoard(currentPage - 1);
+                }
+            });
+
+            $('#pagination').on('click', '.next', function(e) {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    updateBoard(currentPage + 1);
+                }
+            });
+
+            $('#pagination').on('click', '.nnext', function(e) {
+                e.preventDefault();
+                updateBoard(totalPages);
+            });
+
+            $('#search-form').on('submit', function(e) {
+                e.preventDefault();
+                updateBoard(1);
+            });
+        });
+
+        // 로그아웃 버튼 클릭 시 실행
+        $('#logout-btn').click(function() {
+            var logout = confirm('로그아웃하시겠습니까?');
+            if (logout) {
+                $.ajax({
+                    url: 'logout/', // 로그아웃 엔드포인트
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') // CSRF 토큰 설정 (Django 보안)
+                    },
+                    success: function(response) {
+                        // 로그아웃 성공 시 메인 페이지로 이동
+                        window.location.href = '/';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('로그아웃 실패: ' + error);
+                    }
+                });
+            }
+        });
+        
+        // CSRF 토큰을 얻는 함수 (Django 보안을 위해 필요)
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-straight/css/uicons-bold-straight.css'>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/board.css' %}">
+    <link rel="stylesheet" href="{% static 'css/paging.css' %}">
+</head>
+<body>
+    <video src={%static "main.mp4"%} muted autoplay loop></video>
+<!-- 사이트 링크 : https://codepen.io/sujeongKim68/pen/gxBqBL -->   
+<section class="notice">
+   
+      <header>
+        <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
+        <ul class="header_menu">
+            <li><a class="upper" href="">Home</a></li>
+            <li><a class="upper" href="">All</a></li>
+            <li><a class="upper" href="">Contact</a></li>
+            <li><a class="upper" href="">NEWS</a></li>
+            <li><a class="upper" href="">Q&A</a></li>
+        </ul>
+    </header>
+     <div class="page-title">
+        <div class="container">
+            <h3><!-- 공지사항 --></h3>
+        </div>
+    </div>
+      <!-- board seach area -->
+      <!-- 날짜, 환자 검색 -->
+      <div id="board-search">
+          <div class="container">
+              <div class="search-window">
+                  <form action="">
+                      <div class="search-wrap">
+                          <label for="search" class="blind">공지사항 내용 검색</label>
+                          <input type="date"  placeholder="날짜 선택"> <input type="date">
+                          <input id="search" type="search" name="" placeholder="이름" value="">
+                          <button type="submit" class="btn btn-dark">검색</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+     
+    <!-- board list area -->
+      <div id="board-list">
+          <div class="container">
+              <table class="board-table">
+                  <thead>
+                  <tr>
+                      <th scope="col" class="th-num">번호</th>
+                      <th scope="col" class="th-title">이름</th>
+                      <th scope="col" class="th-birth">생년월일</th>
+                      <th scope="col" class="th-date">등록일</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                      <td>3</td>
+                      <th class="title-align">
+                        <a href="{% url 'X-ray' %}">김XX</a>
+                        <p>테스트</p>
+                      </th>
+                      <td>97-01-16</td>
+                      <td>2017.07.13</td>
+                  </tr>
+  
+                  <tr>
+                      <td>2</td>
+                      <th class="title-align"><a href="#!">김XX</a></th>
+                      <td>97-01-16</td>
+                      <td>2017.07.13</td>
+                  </tr>
+  
+                  <tr>
+                      <td>1</td>
+                      <th class="title-align"><a href="#!">김XX</a></th>
+                      <td>97-01-16</td>
+                      <td>2017.07.13</td>
+                  </tr>
+
+                  <tr>
+                    <td>1</td>
+                    <th class="title-align"><a href="#!">김XX</a></th>
+                    <td>97-01-16</td>
+                    <td>2017.07.13</td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <th class="title-align"><a href="#!">김XX</a></th>
+                    <td>97-01-16</td>
+                    <td>2017.07.13</td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <th class="title-align"><a href="#!">김XX</a></th>
+                    <td>97-01-16</td>
+                    <td>2017.07.13</td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <th class="title-align"><a href="#!">김XX</a></th>
+                    <td>97-01-16</td>
+                    <td>2017.07.13</td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <th class="title-align"><a href="#!">김XX</a></th>
+                    <td>97-01-16</td>
+                    <td>2017.07.13</td>
+                </tr>
+                
+                
+                <div class="page_wrap">
+                    <div class="page_nation" id="pagination">
+                        <a class="arrow pprev" href="#"><i class="fi fi-bs-angle-double-small-left"></i></a>
+                        <a class="arrow prev" href="#"><i class="fi fi-bs-angle-small-left"></i></a>
+                        <!-- 페이지 버튼들은 JavaScript를 통해 동적으로 추가될 예정입니다 -->
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                        <a href="#">5</a>
+                        <a class="arrow next" href="#"><i class="fi fi-bs-angle-small-right"></i></a>
+                        <a class="arrow nnext" href="#"><i class="fi fi-bs-angle-double-small-right"></i></a>
+                    </div>
+                </div>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+
+
+
+
+ 
+
+  
+  </section>
+  {% comment %} jquery load {% endcomment %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+    function updateBoard(pageNumber) {
+        $.ajax({
+            url: '/catalog/get_patient_data/',
+            type: 'GET',
+            data: {
+                'page': pageNumber
+            },
+            success: function(data) {
+                updatePage(data);
+            }
+        });
+    }
+    
+    $(document).ready(function() {
+        updateBoard(1); // 첫 번째 페이지 데이터 가져오기
+    });
+    
+    // 페이지 버튼 클릭 이벤트 처리
+    $('#pagination').on('click', '.page-link', function(e) {
+        e.preventDefault();
+        var pageNumber = $(this).data('page');
+        updateBoard(pageNumber);
+    });
+    
+    // 페이지 로드 후 초기 실행
+    $(document).ready(function() {
+        updateBoard(); // 게시판 업데이트
+        setInterval(updateBoard, 5000); // 5초마다 게시판 업데이트
+    });
+    
+    function updatePage(data) {
+        // 기존의 게시판 내용 비우기
+        $('#board-list tbody').empty();
+        
+        // 받아온 데이터로 게시판 업데이트
+        data.forEach(function(patient) {
+            var newRow = '<tr><td>' + patient.id + '</td>' +
+                         '<th class="title-align"><a href="{% url 'X-ray' %}">' + patient.name + '</a></th>' +
+                         '<td>' + patient.birthdate + '</td>' +
+                         '<td>' + patient.registration_date + '</td></tr>';
+            $('#board-list tbody').append(newRow);
+        });
+    }
+
+
+  </script>
+
+
+  
+</body>
+</html>

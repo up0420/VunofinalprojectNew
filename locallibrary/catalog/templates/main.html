@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+
+<body>
+    <video src="{% static 'main.mp4' %}" muted autoplay loop></video>
+    <header>
+        <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
+        <ul class="header_menu">
+            <li><a class="upper" href="">Home</a></li>
+            <li><a class="upper" href="">All</a></li>
+            <li><a class="upper" href="">Contact</a></li>
+            <li><a class="upper" href="">NEWS</a></li>
+            <li><a class="upper" href="">Q&A</a></li>
+        </ul>
+    </header>
+    <div class="example">
+        <p>FUTURE MEDICAL AI</p>
+        <p>WITH CHEST MATE</p>
+        <p>Logged in as: Dr. {{ request.session.doc_name }} (ID: {{ request.session.doc_id }})</p>
+    </div>
+    
+    <div class="auth-container">
+        <form id="login-form" method="post" action="{% url 'login_view' %}">
+            {% csrf_token %}
+            <h3 style="font-size: 2em;">Login</h3>
+            <br><br>
+            <input type="text" placeholder="ID" name="id">
+            <input type="password" placeholder="Password" name="password">
+            <input type="submit" value="Login">
+        
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        </form>
+
+
+
+        <form id="register-form" method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <h3 style="font-size: 2em;">Register</h3>
+            <input type="text" placeholder="ID" name="DOC_ID" value="{{ form.DOC_ID.value|default_if_none:'' }}">
+            <input type="password" placeholder="Password" name="DOC_PW"
+                value="{{ form.DOC_PW.value|default_if_none:'' }}">
+            <input type="text" placeholder="Name" name="DOC_NAME" value="{{ form.DOC_NAME.value|default_if_none:'' }}">
+            <input type="text" placeholder="Contact" name="DOC_CONTACT"
+                value="{{ form.DOC_CONTACT.value|default_if_none:'' }}">
+ 
+            <select name="DOC_MAJOR">
+                <option value="흉부외과" {% if form.DOC_MAJOR.value|stringformat:"s" == "흉부외과" %}selected{% endif %}>흉부외과</option>
+                <option value="신경외과" {% if form.DOC_MAJOR.value|stringformat:"s" == "신경외과" %}selected{% endif %}>신경외과</option>
+                
+            </select>
+            <br>
+            <select name="HOS_ID">
+                <option value="1" {% if form.HOS_ID.value == "1" %}selected{% endif %}>삼성병원</option>
+                <option value="2" {% if form.HOS_ID.value == "2" %}selected{% endif %}>서울대학교병원</option>
+                <option value="3" {% if form.HOS_ID.value == "3" %}selected{% endif %}>세브란스병원</option>
+                <option value="4" {% if form.HOS_ID.value == "4" %}selected{% endif %}>한림대병원</option>
+            </select>
+            <br>
+            <input type="submit" value="Register">
+        </form>
+
+        <!-- 로그인과 회원가입 버튼 -->
+        <div class="auth-buttons">
+            <button id="login-btn">Login</button>
+            <button id="register-btn">Register</button>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // 로그인 폼과 회원가입 폼을 가져오기
+            let loginForm = document.getElementById("login-form");
+            let registerForm = document.getElementById("register-form");
+
+            // 회원가입 폼은 처음에 숨김
+            registerForm.style.display = "none";
+
+            // 로그인 폼을 보여줍니다.
+            function showLoginForm() {
+                loginForm.style.display = "block";
+                registerForm.style.display = "none";
+            }
+
+            // 회원가입 폼을 보여줍니다.
+            function showRegisterForm() {
+                loginForm.style.display = "none";
+                registerForm.style.display = "block";
+            }
+
+            // 로그인 버튼 클릭 시 로그인 폼을 보여줍니다.
+            document.getElementById("login-btn").addEventListener("click", showLoginForm);
+
+            // 회원가입 버튼 클릭 시 회원가입 폼을 보여줍니다.
+            document.getElementById("register-btn").addEventListener("click", showRegisterForm);
+        });
+        var selects = document.getElementsByTagName('select');
+        for (var i = 0; i < selects.length; i++) {
+            selects[i].style.width = '100%';
+            selects[i].style.padding = '10px';
+            selects[i].style.marginBottom = '10px';
+            selects[i].style.border = '1px solid #ccc';
+            selects[i].style.borderRadius = '5px';
+        }
+
+        // option 요소에 스타일 적용
+        var options = document.getElementsByTagName('option');
+        for (var i = 0; i < options.length; i++) {
+            options[i].style.padding = '10px';
+        }
+    </script>
+</body>
+
+
+</html>
