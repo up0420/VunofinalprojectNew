@@ -1,5 +1,6 @@
 *.zip
 venv/
+venv2/
 __pycache__/
 db.sqlite3
 tests.py
