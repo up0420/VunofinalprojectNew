@@ -1,5 +1,18 @@
 # Project
 
+## 0. Build Environment
+
+ubuntu 20.04 기준입니다.
+
+```bash
+    apt-get install  mysql-server mysql-client  libmysqlclient-dev build-essential
+    echo 'export PATH="/usr/local/opt/mysql-client/bin:$PATH"' >> ~/.zshrc # zsh 사용해서 이렇게 함
+    export MYSQLCLIENT_CFLAGS=$(mysql_config --cflags)
+    export MYSQLCLIENT_LDFLAGS=$(mysql_config --libs)
+    pip install mysqlclient  
+    python3 ./locallibrary/manage.py runserver 
+```
+
 ## 1. Dataset EDA 
 
 데이터셋은 NIH Chest X-ray 14 dataset를 활용하며, 학습에 앞서 데이터 EDA 진행.
@@ -23,25 +36,13 @@
 | valid | 5,146  | 4,779  |
 | test  | 14,882 | 10,714 |
 
-<!-- 
-```mermaid
 
-pie title total 성비
-    "female" : 48780
-    "male" : 63340
-```
-```mermaid
-pie title train 성비
-    "female" : 43312
-    "male" : 33287
-```
-```mermaid
-pie title validation 성비
-    "female" : 5146
-    "male" : 4779
-```
-```mermaid
-pie title test 성비
-    "female" : 14882
-    "male" : 10714
-``` -->
+apt-get install  mysql-server mysql-client  libmysqlclient-dev build-essential
+
+echo 'export PATH="/usr/local/opt/mysql-client/bin:$PATH"' >> ~/.zshrc
+export MYSQLCLIENT_CFLAGS=$(mysql_config --cflags)
+export MYSQLCLIENT_LDFLAGS=$(mysql_config --libs)
+
+pip install mysqlclient  
+
+python3 ./locallibrary/manage.py runserver 
