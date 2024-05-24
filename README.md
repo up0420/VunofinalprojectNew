@@ -35,14 +35,3 @@ ubuntu 20.04 기준입니다.
 | train | 43,312 | 33,287 |
 | valid | 5,146  | 4,779  |
 | test  | 14,882 | 10,714 |
-
-
-apt-get install  mysql-server mysql-client  libmysqlclient-dev build-essential
-
-echo 'export PATH="/usr/local/opt/mysql-client/bin:$PATH"' >> ~/.zshrc
-export MYSQLCLIENT_CFLAGS=$(mysql_config --cflags)
-export MYSQLCLIENT_LDFLAGS=$(mysql_config --libs)
-
-pip install mysqlclient  
-
-python3 ./locallibrary/manage.py runserver 
