@@ -106,8 +106,8 @@ def xray(request) :
         # patient_id가 제공되지 않은 경우에 대한 예외 처리
         return render(request, 'X-ray-2.html', {'error': '환자 ID가 제공되지 않았습니다.'})
 
-from django.utils.decorators import method_decorator
-@method_decorator(csrf_exempt, name='dispatch')
+# from django.utils.decorators import method_decorator
+# @method_decorator(csrf_exempt, name='dispatch')
 def saveMIR(request):
     if request.method == 'POST':
         doc_id = request.session.get('doc_id')
