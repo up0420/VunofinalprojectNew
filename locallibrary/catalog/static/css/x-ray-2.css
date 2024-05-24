@@ -1,0 +1,262 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: black;
+    
+}
+.header {
+    height: auto;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #22252E;
+    color: #ccc;
+    display: flex;
+    justify-content: center;
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+}
+
+.main-container {
+    overflow: hidden; 
+    margin-bottom: 10px;
+}
+.image-gallery {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-image {
+    width: 550px;
+    height: auto;
+    transition: filter 0.3s ease;
+}
+
+#drawing-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* 클릭을 막기 위해 설정 */
+}
+#heatmapButton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.thumbnail-images {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.thumbnail {
+    width: 100px;
+    height: auto;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.toolbar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    position: absolute;
+    top: 50%;
+    left : 55%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 7px 10px;
+}
+
+.toolbar .fi {  
+    font-size: 24px; 
+    color: #ccc; 
+    cursor: pointer; 
+}
+
+.toolbar .fi:hover {
+    color: #a0b1c4;
+    fill: #a0b1c4; 
+    color:white;
+    fill : white;
+}
+
+.zoom-area {
+    position: absolute;
+    top: 50%;
+    left : 59%;
+}
+
+#zoom-range{
+    visibility: hidden;
+    writing-mode: bt-lr; /* 기본 쓰기 모드를 변경하여 세로 방향으로 설정 */
+    -webkit-appearance: slider-vertical; /* WebKit 기반 브라우저용 */
+    width: 8px;
+    height: 130px;
+}
+
+.heatmap-container {
+    position: absolute;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    transition: left 0.3s ease;
+}
+
+.heatmap-header {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.heatmap {
+    display: flex;
+    align-items: center;
+}
+
+.heatmap-gradient {
+    width: 80%;
+    height: 10px;
+    background: linear-gradient(to right, black, blue, green, yellow, red);
+}
+
+.heatmap-labels {
+    width: 20%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.diagnosis-panel {
+    flex: 1;
+    padding: 20px;
+    margin-left: 20px;
+    /* background-color: #878a93a3; */
+    background-color: #22252E;
+    color: #f9f9f9;
+}
+
+.diagnosis-header {
+    font-size: 20px;
+    margin-bottom: 20px;
+    background-color: #a0b1c4;
+    background-color: #30343D;
+    border-radius: 5px;
+    padding: 10px 20px;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+}
+
+.diagnosis-details {    
+    margin-bottom: 10px;
+    padding: 7px 20px;  
+    align-items: center;
+    width: 90%;
+    height: 100px;
+    background-color: #30343D;
+    border-radius: 5px;
+}
+.hidden {
+    visibility: hidden;
+}
+
+.findings-container {
+    display: flex;
+    margin-top: 2px;
+}
+.bar-container {
+    width: 60%;
+    /* background-color: #e0e0e0; */
+    /* border-radius: 5px; */
+    overflow: hidden;
+    margin: 5px 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.bar {
+    height: 20px;
+    width: 0;
+    background-color: #5DE2FF;
+    background-color: #76c7c0;
+    /* border-radius: 5px 0 0 5px; */
+    transition: width 0.5s ease-in-out;
+}
+
+.findings-names {
+    width: 30%;
+    margin: 5px 0;
+    text-align: right;
+
+}
+
+.percentage {
+    margin: 5px 0;
+}
+
+
+.opinion-title {
+    text-align: center;
+    margin: 3px;
+    margin-bottom: 10px;
+}
+
+.ai-opinion {
+    margin-bottom: 20px;
+}
+.ai-opinion-box {
+    align-content: center;
+    text-align: center;
+}
+
+.form-actions {
+    display: flex;
+    justify-content :center;
+    /* justify-content: space-between; */
+}
+textarea{
+    resize : none;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #30343D;
+    border-radius: 5px;
+    border: none;
+    color: #ccc;
+
+}
+
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #30343D;
+    border-radius: 3px;
+    color: #f9f9f9;
+}
+
+#submit{
+    width : 30%;
+    border-radius: 2px;
+}
+
