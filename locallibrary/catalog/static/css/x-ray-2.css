@@ -1,34 +1,61 @@
 * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 body {
     font-family: Arial, sans-serif;
-    background-color: black;
-    
-}
-.header {
-    height: auto;
-    width: 100%;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    font-weight: bold;
-    font-size: 20px;
-    background-color: #22252E;
+    background-color: #1e1e1e;
     color: #ccc;
-    display: flex;
-    justify-content: center;
+    overflow: hidden; /* 스크롤 제거 */
 }
+
+/* 헤더 스타일 */
+.header {
+    width: 100%;
+    padding: 20px; /* 패딩을 늘려서 간격 조정 */
+    background-color: #22252E;
+    color: #f9f9f9;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between; /* 요소들 사이에 공간을 둡니다 */
+    align-items: center;
+    position: relative; /* 위치 설정을 위해 상대 위치 지정 */
+}
+
+.icon-container {
+    position: absolute;
+    left: 20px; /* 왼쪽 끝으로 이동 */
+    cursor: pointer;
+}
+
+.header-patient {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center; /* 중앙 정렬 */
+}
+
+.header span {
+    position: absolute;
+    right: 20px; /* 오른쪽 끝으로 이동 */
+}
+
 .container {
     display: flex;
     flex-direction: row;
     margin: 20px;
+    height: calc(100vh - 90px); /* 헤더를 제외한 전체 화면 높이 */
 }
 
 .main-container {
-    overflow: hidden; 
+    overflow: hidden;
     margin-bottom: 10px;
+    width: 550px;
+    position: relative;
+    flex-grow: 1; /* 크기 조정 */
 }
+
 .image-gallery {
     flex: 2;
     display: flex;
@@ -37,7 +64,7 @@ body {
 }
 
 #main-image {
-    width: 550px;
+    width: 100%;
     height: auto;
     transition: filter 0.3s ease;
 }
@@ -46,32 +73,27 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    pointer-events: none; /* 클릭을 막기 위해 설정 */
-}
-#heatmapButton {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+    pointer-events: none;
 }
 
 .thumbnail-images {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     margin-top: 10px;
 }
 
 .thumbnail {
     width: 100px;
-    height: auto;
     margin: 5px;
     cursor: pointer;
+    transition: transform 0.3s;
 }
 
-.toolbar{
+.thumbnail:hover {
+    transform: scale(1.1);
+}
+
+.toolbar {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -79,105 +101,69 @@ body {
     gap: 10px;
     position: absolute;
     top: 50%;
-    left : 55%;
+    left: 55%;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 7px 10px;
 }
 
-.toolbar .fi {  
-    font-size: 24px; 
-    color: #ccc; 
-    cursor: pointer; 
+.toolbar .fi {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
 }
 
 .toolbar .fi:hover {
     color: #a0b1c4;
-    fill: #a0b1c4; 
-    color:white;
-    fill : white;
+    fill: #a0b1c4;
 }
 
 .zoom-area {
     position: absolute;
     top: 50%;
-    left : 59%;
+    left: 59%;
 }
 
-#zoom-range{
+#zoom-range {
     visibility: hidden;
-    writing-mode: bt-lr; /* 기본 쓰기 모드를 변경하여 세로 방향으로 설정 */
-    -webkit-appearance: slider-vertical; /* WebKit 기반 브라우저용 */
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
     width: 8px;
     height: 130px;
-}
-
-.heatmap-container {
-    position: absolute;
-    top: 0;
-    left: -320px;
-    width: 300px;
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    transition: left 0.3s ease;
-}
-
-.heatmap-header {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.heatmap {
-    display: flex;
-    align-items: center;
-}
-
-.heatmap-gradient {
-    width: 80%;
-    height: 10px;
-    background: linear-gradient(to right, black, blue, green, yellow, red);
-}
-
-.heatmap-labels {
-    width: 20%;
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    margin-left: 10px;
 }
 
 .diagnosis-panel {
     flex: 1;
     padding: 20px;
     margin-left: 20px;
-    /* background-color: #878a93a3; */
     background-color: #22252E;
     color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .diagnosis-header {
     font-size: 20px;
     margin-bottom: 20px;
-    background-color: #a0b1c4;
     background-color: #30343D;
     border-radius: 5px;
     padding: 10px 20px;
-    align-items: center;
     text-align: center;
     width: 90%;
 }
 
-.diagnosis-details {    
+.diagnosis-details {
     margin-bottom: 10px;
-    padding: 7px 20px;  
+    padding: 7px 20px;
     align-items: center;
     width: 90%;
     height: 100px;
     background-color: #30343D;
     border-radius: 5px;
 }
+
 .hidden {
     visibility: hidden;
 }
@@ -186,21 +172,19 @@ body {
     display: flex;
     margin-top: 2px;
 }
+
 .bar-container {
     width: 60%;
-    /* background-color: #e0e0e0; */
-    /* border-radius: 5px; */
     overflow: hidden;
     margin: 5px 0;
     margin-left: 10px;
     margin-right: 10px;
 }
+
 .bar {
     height: 20px;
     width: 0;
-    background-color: #5DE2FF;
     background-color: #76c7c0;
-    /* border-radius: 5px 0 0 5px; */
     transition: width 0.5s ease-in-out;
 }
 
@@ -208,13 +192,11 @@ body {
     width: 30%;
     margin: 5px 0;
     text-align: right;
-
 }
 
 .percentage {
     margin: 5px 0;
 }
-
 
 .opinion-title {
     text-align: center;
@@ -224,28 +206,37 @@ body {
 
 .ai-opinion {
     margin-bottom: 20px;
+    width: 90%;
 }
+
 .ai-opinion-box {
+    align-content: center;
+    text-align: center;
+    width: 100%;
+}
+
+.doctor-opinion {
+    width: 100%; /* 가로 폭을 diagnosis-panel 내부에 맞추기 */
     align-content: center;
     text-align: center;
 }
 
-.form-actions {
-    display: flex;
-    justify-content :center;
-    /* justify-content: space-between; */
-}
-textarea{
-    resize : none;
+textarea {
+    resize: none;
     padding: 10px;
     margin-bottom: 10px;
     background-color: #30343D;
     border-radius: 5px;
     border: none;
     color: #ccc;
-
+    width: calc(100% - 40px); /* 너비 조정 */
 }
 
+.form-actions {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* 가로 폭을 diagnosis-panel 내부에 맞추기 */
+}
 
 button {
     padding: 10px 20px;
@@ -255,8 +246,7 @@ button {
     color: #f9f9f9;
 }
 
-#submit{
-    width : 30%;
+#submit {
+    width: 30%;
     border-radius: 2px;
 }
-
