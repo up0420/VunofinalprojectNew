@@ -21,19 +21,59 @@ document.getElementById('analysis').addEventListener('click', function() {
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    // 썸네일 클릭 시, 메인 이미지로 변경
-    changeImg();
+    // 초기 썸네일 이미지에 이벤트 리스너 추가 
+    // 메인 <-> 썸네일 이미지 전환 
+    initializeThumbnails();
 }); 
 
 
-// 썸네일 클릭 시, 메인 이미지로 변경
-function changeImg() {
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    const mainImage = document.getElementById('main-image');
+// 썸네일 비우는 함수
+function clearThumbnails() {
+    const thumbnailImagesDiv = document.querySelector('.thumbnail-images');
+    thumbnailImagesDiv.innerHTML = ''; // 비워주기
+}
 
+
+// 메인 이미지를 설정하는 함수
+function setMainImage(imageUrl) {
+    var mainImage = document.getElementById('main-image');
+   
+    mainImage.src = `media/${imageUrl}`;
+    console.log('mainImage: ' + mainImage);
+    console.log('imgurl: ' + imageUrl);
+    console.log('mainImage.src : ' + mainImage.src);
+
+
+    // // main-container 요소를 가져옵니다.
+    // var mainContainer = document.querySelector('.main-container');
+    
+    // // mainImage를 main-container에 추가합니다.
+    // mainContainer.appendChild(mainImage);
+}
+
+// 이미지를 썸네일에 추가하는 함수
+function addThumbnail(imageUrl) {
+    var newImage = document.createElement('img');
+    newImage.src = `media/${imageUrl}`
+    newImage.className = 'thumbnail';
+    newImage.alt = 'X-Ray Thumbnail';
+
+    var thumbnailImagesDiv = document.querySelector('.thumbnail-images');
+    thumbnailImagesDiv.appendChild(newImage);
+
+    // 새로 추가된 썸네일에 이벤트 리스너 추가
+    newImage.addEventListener('click', function() {
+        setMainImage(imageUrl); // 이미지 클릭시 메인이미지로 변경
+    });
+}
+
+
+// 썸네일 클릭 시, 메인 이미지로 변경하는 이벤트 리스너를 초기화하는 함수
+function initializeThumbnails() {
+    const thumbnails = document.querySelectorAll('.thumbnail');
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
-            mainImage.src = this.src;
+            setMainImage(thumbnail.src.replace(window.location.origin + '/', ''));
         });
     });
 }
@@ -44,7 +84,6 @@ document.getElementById('add-image').addEventListener('click', function() {
     document.getElementById('image-input').click();
 });
 
-
 // 썸네일 + 메인이미지 변경
 document.getElementById('image-input').addEventListener('change', function(event) {
     var file = event.target.files[0];
@@ -54,23 +93,24 @@ document.getElementById('image-input').addEventListener('change', function(event
         
         reader.onload = function(e) {
             var newImage = document.createElement('img');
-            newImage.src = e.target.result;  // e.target은 FileReader 객체이고, result는 읽은 파일의 데이터 URL
+            newImage.src = e.target.result ;  // e.target은 FileReader 객체이고, result는 읽은 파일의 데이터 URL
             newImage.className = 'thumbnail';
             newImage.alt = 'New X-Ray Thumbnail';
-            
+            console.log('add image 경로 : ' + newImage.src);
             var thumbnailImagesDiv = document.querySelector('.thumbnail-images');
-            thumbnailImagesDiv.appendChild(newImage.cloneNode());
-            
+            thumbnailImagesDiv.appendChild(newImage.cloneNode());  
+
             var mainImage = document.getElementById('main-image');
             mainImage.src = e.target.result;
-            // var mainContainer = document.querySelector('.main-container');
-            // mainContainer.appendChild(newImage.cloneNode()); // 이미지를 복제하여 main-container에 추가
 
-            changeImg();
+
+            // 새로 추가된 썸네일에 이벤트 리스너 추가
+            newImage.addEventListener('click', function() {
+                setMainImage(newImage.src);
+            });
         }
         
         reader.readAsDataURL(file);  // 파일의 데이터를 Base64 인코딩된 데이터 URL로 변환
-        
     } else {
         alert("Please select an image file.");
     }
@@ -180,41 +220,10 @@ function loadPatientImages() {
         });
 }
 
-// 썸네일 비우는 함수
-function clearThumbnails() {
-    const thumbnailImagesDiv = document.querySelector('.thumbnail-images');
-    thumbnailImagesDiv.innerHTML = ''; // 비워주기
+// 전 페이지로 이동하는 함수
+function goBack() {
+    window.location.href = 'board'; // 'board' 페이지로 이동
 }
-
-
-// 메인 이미지를 설정하는 함수
-function setMainImage(imageUrl) {
-    var mainImage = document.getElementById('main-image');
-   
-    mainImage.src = `media/${imageUrl}`;
-    console.log('mainImage: ' + mainImage);
-    console.log('imgurl: ' + imageUrl);
-    console.log('mainImage.src : ' + mainImage.src);
-
-    // // main-container 요소를 가져옵니다.
-    // var mainContainer = document.querySelector('.main-container');
-    
-    // // mainImage를 main-container에 추가합니다.
-    // mainContainer.appendChild(mainImage);
-}
-
-// 이미지를 썸네일에 추가하는 함수
-function addThumbnail(imageUrl) {
-    var newImage = document.createElement('img');
-    newImage.src = `media/${imageUrl}`
-    newImage.className = 'thumbnail';
-    newImage.alt = 'X-Ray Thumbnail';
-
-    var thumbnailImagesDiv = document.querySelector('.thumbnail-images');
-    thumbnailImagesDiv.appendChild(newImage);
-}
-
-
 
 // Analysis 버튼 클릭 시 분석 시작 
 function updateBar() {
