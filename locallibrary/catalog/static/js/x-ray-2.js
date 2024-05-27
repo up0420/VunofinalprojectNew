@@ -216,11 +216,6 @@ function addThumbnail(imageUrl) {
 
 
 
-
-
-
-
-
 // Analysis 버튼 클릭 시 분석 시작 
 function updateBar() {
     // hidden 해놓은 ai 소견 내역을 visible로 변경하기
