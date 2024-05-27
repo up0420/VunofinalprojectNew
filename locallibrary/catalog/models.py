@@ -6,9 +6,6 @@ from django.db.models.functions import Lower
 # Create your models here.
 from django.db import models
 
-class test(models.Model):
-    test_id = models.IntegerField()
-
 class Hospital(models.Model):
     HOS_ID = models.IntegerField(primary_key=True)
     HOS_NAME = models.TextField()
