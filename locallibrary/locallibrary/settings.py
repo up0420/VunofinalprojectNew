@@ -93,7 +93,14 @@ DATABASES = {
         'HOST': 'project-db-campus.smhrd.com',    # MySQL 호스트
         'PORT': '3312',         # MySQL 포트
     }
-}  
+}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',   # MySQL 데이터베이스 이름
+        
+#     }
+# }   
 
 
 # Password validation
