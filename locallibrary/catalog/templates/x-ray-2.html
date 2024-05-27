@@ -5,35 +5,32 @@
     <meta charset="UTF-8">
     <title>X-Ray Analysis</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/x-ray-2.css'  %}">
-    <link rel='stylesheet'
-        href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel="stylesheet" href="{% static 'css/x-ray-2.css' %}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
 </head>
 
 <body>
-    <!-- <div class="header">CHEST MATE</div> -->
+    <div class="header">
+        <div class="icon-container" role="button" aria-label="Back" onclick="goBack()"><i class="fi fi-br-arrow-left"></i></div>
+        <div class="header-patient">{{ patient.PAT_NAME }}({{ patient.PAT_BIRTH }})</div>
+        <span>CHEST MATE</span>
+    </div>
 
     <!-- x-ray image area -->
     <div class="container">
         <div class="image-gallery">
             <div class="main-container">
-               <!--  <input type="range" id="contrast-slider" min="0" max="200" value="100"> -->
-                <p> Patient ID: {{ patient.PAT_ID }} </p>
-                <p> Patient ID: <span id="patient-id">{{ patient_id }}</span> </p>
+                <p>Patient ID: {{ patient.PAT_ID }}</p>
                 <img id="main-image" src="" alt="Main X-Ray Image">
-                
-                <!-- <canvas id="heatmapCanvas" style="display: none;"></canvas> -->
                 <canvas id="drawing-canvas"></canvas>
             </div>
             <div>
                 <input type="file" id="image-input" accept="image/*" style="display:none;">
                 <button id="add-image">Add</button>
-                <button id="analysis" onclick="updateBar()" >Analysis</button>
+                <button id="analysis" onclick="updateBar()">Analysis</button>
                 <button id="save-image">Save</button>
-                <!-- <button id="heatmapButton">Show Heatmap</button> -->
             </div>
-            
             <div class="thumbnail-images">
                 <img class="thumbnail" src="" alt="X-Ray Thumbnail 1">
                 <img class="thumbnail" src="" alt="X-Ray Thumbnail 2">
@@ -42,26 +39,28 @@
         </div>
 
         <!-- x-ray 크기 조절 등 area -->
-        <div  class="toolbar">
-            <i class="fi fi-sr-zoom-in" id="zoom-in-icon"></i>
-            <i class="fi fi-sr-zoom-out" id="zoom-out-icon"></i>
-            <i class="fi fi-sr-pen-nib"></i>
-            <svg   xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 18 18">
-                <path class="fi fi-sr-pen-nib" fill="#ccc" fill-rule="evenodd" d="M68,121 C72.9705627,121 77,116.970563 77,112 C77,107.029437 72.9705627,103 68,103 C63.0294373,103 59,107.029437 59,112 C59,116.970563 63.0294373,121 68,121 Z M68,119.8 C72.2313475,119.8 75.8,116.307821 75.8,112 C75.8,108.076069 72.6281738,104.2 68,104.2 L68,119.8 Z" transform="matrix(-1 0 0 1 77 -103)"/>
+        <div class="toolbar">
+            <i class="fi fi-sr-zoom-in" id="zoom-in-icon" aria-label="Zoom In"></i>
+            <i class="fi fi-sr-zoom-out" id="zoom-out-icon" aria-label="Zoom Out"></i>
+            <i class="fi fi-sr-pen-nib" aria-label="Draw"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" aria-label="Adjust Contrast">
+                <path class="fi fi-sr-pen-nib" fill="#ccc" fill-rule="evenodd"
+                    d="M68,121 C72.9705627,121 77,116.970563 77,112 C77,107.029437 72.9705627,103 68,103 C63.0294373,103 59,107.029437 59,112 C59,116.970563 63.0294373,121 68,121 Z M68,119.8 C72.2313475,119.8 75.8,116.307821 75.8,112 C75.8,108.076069 72.6281738,104.2 68,104.2 L68,119.8 Z"
+                    transform="matrix(-1 0 0 1 77 -103)" />
             </svg>
-            <i class="fi fi-br-rotate-right" id="return"></i>
+            <i class="fi fi-br-rotate-right" id="return" aria-label="Reset"></i>
         </div>
         <div class="zoom-area">
-           <input type="range" min="50" max="200" value="100" id="zoom-range">
+            <input type="range" min="50" max="200" value="100" id="zoom-range" aria-label="Zoom Range">
         </div>
-        
+
         <!-- 진단 area -->
         <div class="diagnosis-panel">
             <div class="diagnosis-header">Diagnosis of Lesions</div>
             <div class="opinion-title">AI Opinion</div>
             <div class="diagnosis-details">
                 <div class="findings-container hidden">
-                    <div class="findings-names" id="finding1">Effusion </div>
+                    <div class="findings-names" id="finding1">Effusion</div>
                     <div class="bar-container">
                         <div class="bar" id="bar1"></div>
                     </div>
@@ -69,7 +68,7 @@
                 </div>
                 
                 <div class="findings-container hidden">
-                    <div class="findings-names" id="finding2">Consolidation </div>
+                    <div class="findings-names" id="finding2">Consolidation</div>
                     <div class="bar-container">
                         <div class="bar" id="bar2"></div>
                     </div>
@@ -77,7 +76,7 @@
                 </div>
                 
                 <div class="findings-container hidden">
-                    <div class="findings-names" id="finding3">Fibrosis </div>
+                    <div class="findings-names" id="finding3">Fibrosis</div>
                     <div class="bar-container">
                         <div class="bar" id="bar3"></div>
                     </div>
@@ -85,7 +84,7 @@
                 </div>
             </div>
             <div class="ai-opinion">
-                <div class="diagnosis-details ai-opinion-box" ><span id="ai-opinion" class="hidden">ai 소견</span></div>
+                <div class="diagnosis-details ai-opinion-box"><span id="ai-opinion" class="hidden">ai 소견</span></div>
             </div>
             <div class="doctor-opinion">
                 <div class="opinion-title">Doctor Opinion</div>
@@ -96,36 +95,7 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'js/x-ray-2.js'  %}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-            // Submit button
-        $(document).ready(function() {
-            $('#submit').click(function() {
-                const aiOpinion = $('#ai-opinion').text();
-                const doctorOpinion = $('#doctor-opinion').val();
-                // 여기에 XIMAGE_ID 값 들고와야함
-
-                $.ajax({
-                    url: '{% url "saveMIR" %}',
-                    type: 'POST',
-                    data: {
-                        'ai_opinion': aiOpinion,
-                        'doctor_opinion': doctorOpinion,
-                        // 'ximage_id': ximageId,  // 데이터 전달도 완성
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        alert('Data saved successfully!');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error saving data:', error);
-                    }
-                });
-            });
-        });
-
-    </script>
+    <script src="{% static 'js/x-ray-2.js' %}"></script>
 </body>
 
 </html>
