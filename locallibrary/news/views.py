@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import NewsArticle
 
 def news_list(request):
-    articles = NewsArticle.objects.all().order_by('-pub_date')
+    articles = NewsArticle.objects.all().order_by('pub_date')
     paginator = Paginator(articles, 10)  # 페이지 당 10개의 기사
 
     page_number = request.GET.get('page')
