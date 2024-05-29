@@ -18,7 +18,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout_view'),
     path('analyze/', views.analyze_image, name='analyze_image'), 
     path('login/', views.login_view, name='login_view'),
-    path('saveMIR/', views.saveMIR, name='saveMIR')
+    path('save_mir/', views.save_mir, name='save_mir'),
     
 ]
 

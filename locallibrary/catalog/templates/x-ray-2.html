@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/x-ray-2.css' %}">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
     <div class="container">
         <div class="image-gallery">
             <div class="main-container">
-                <p>Patient ID: {{ patient.PAT_ID }}</p>
+                <p>Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p>
                 <img id="main-image" src="" alt="Main X-Ray Image">
                 <canvas id="drawing-canvas"></canvas>
             </div>
