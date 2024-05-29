@@ -397,6 +397,39 @@ def logout_view(request):
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
+#mir에 저장하기
+import json
+from django.http import JsonResponse
+from .models import XImage, Doctor, MIR
+
+def save_mir(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            ai_result = data.get('ai_result')
+            doctor_opinion = data.get('doctor_opinion')
+            patient_id = data.get('patient_id')
+            image_url = data.get('image_url')  # Assuming image_url is passed in the request
+
+            # Find the XImage object using the image path (URL)
+            ximage = XImage.objects.get(PAT_ID=patient_id, XIMAGE_PATH=image_url)
+            doc_id = request.session.get('doc_id')
+            doctor = get_object_or_404(Doctor, DOC_ID=doc_id)
+            mir = MIR.objects.create(
+                XIMAGE_ID=ximage,
+                MIR_RESULT=ai_result,
+                MIR_MIR=doctor_opinion,
+                DOC_ID=doctor
+            )
+            mir.save()
+            return JsonResponse({'success': True})
+        except XImage.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'XImage not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        print("Invalid request method:", request.method)
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
 
