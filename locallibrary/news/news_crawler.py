@@ -4,6 +4,7 @@ import pandas as pd
 from urllib.parse import urljoin
 import schedule
 import time
+import threading
 
 def crawl_and_save():
     # 기본 URL 설정
@@ -113,7 +114,12 @@ def job():
 schedule.every().day.at("10:00").do(job)
 schedule.every().day.at("22:00").do(job)
 
-# 스케줄러 실행 루프
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# 스케줄러 실행 루프를 백그라운드 스레드에서 실행
+def run_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+# 스케줄러 실행을 위한 스레드 시작
+schedule_thread = threading.Thread(target=run_schedule, daemon=True)
+schedule_thread.start()
