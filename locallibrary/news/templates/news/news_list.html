@@ -27,7 +27,13 @@
                 {% for article in page_obj %}
                     <div class="article">
                         <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
-                        <p>{{ article.content }}</p>
+                        <p>
+                            {% if article.content|length > 50 %}
+                                {{ article.content|slice:":50" }}...
+                            {% else %}
+                                {{ article.content }}
+                            {% endif %}
+                        </p>
                         <p>기자: {{ article.reporter }}</p>
                         {% if article.img_url %}
                             <img src="{{ article.img_url }}" alt="{{ article.title }}">
