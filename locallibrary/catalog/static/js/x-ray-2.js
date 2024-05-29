@@ -419,14 +419,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// 대비 조절  
-document.addEventListener('DOMContentLoaded', () => {
-    const contrastSlider = document.getElementById('contrast-slider');
-    const mainImage = document.getElementById('main-image');
+// // 대비 조절  
+// document.addEventListener('DOMContentLoaded', () => {
+//     const contrastSlider = document.getElementById('contrast-slider');
+//     const mainImage = document.getElementById('main-image');
 
-    contrastSlider.addEventListener('input', () => {
-        const contrastValue = contrastSlider.value;
-        mainImage.style.filter = `contrast(${contrastValue}%)`;
-    });
+//     contrastSlider.addEventListener('input', () => {
+//         const contrastValue = contrastSlider.value;
+//         mainImage.style.filter = `contrast(${contrastValue}%)`;
+//     });
+// });
+
+// submit 후 저장
+
+console.log("JavaScript file loaded.");
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Document is ready.');
+    setupSubmitButton();
 });
+
+function setupSubmitButton() {
+    const submitButton = document.getElementById('submit');
+    if (!submitButton) {
+        console.error('Submit button not found.');
+        return;
+    }
+    console.log('Submit button found. Adding event listener.');
+
+    submitButton.addEventListener('click', function() {
+        console.log('Submit button clicked.');
+        const aiOpinionElement = document.getElementById('ai-opinion');
+        const doctorOpinionElement = document.getElementById('doctor-opinion');
+        const patientIdElement = document.getElementById('patient-id');
+        const mainImageElement = document.getElementById('main-image');
+
+        if (!aiOpinionElement || !doctorOpinionElement || !patientIdElement || !mainImageElement) {
+            console.error('Missing elements:', { aiOpinionElement, doctorOpinionElement, patientIdElement, mainImageElement });
+            alert('Required elements are missing.');
+            return;
+        }
+
+        const aiOpinion = aiOpinionElement.textContent.split(": ")[1]; // AI 소견에서 결과만 추출
+        const doctorOpinion = doctorOpinionElement.value;
+        const patientId = patientIdElement.textContent.trim();
+        let imageUrl = mainImageElement.src.replace(window.location.origin + '/', '').trim();
+
+        // Remove 'catalog/media/' prefix if present
+        if (imageUrl.startsWith('catalog/media/')) {
+            imageUrl = imageUrl.replace('catalog/media/', '');
+        }
+
+        console.log({
+            'ai_result': aiOpinion,
+            'doctor_opinion': doctorOpinion,
+            'patient_id': patientId,
+            'image_url': imageUrl
+        });
+
+        const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // CSRF 토큰 가져오기
+
+        fetch(`save_mir/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken  // CSRF 토큰 사용
+            },
+            body: JSON.stringify({
+                'ai_result': aiOpinion,
+                'doctor_opinion': doctorOpinion,
+                'patient_id': patientId,
+                'image_url': imageUrl
+            })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response URL:', response.url);
+            console.log('Response type:', response.type);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                alert('Data saved successfully!');
+                window.location.href = '/catalog/board'; // 저장 후 board 페이지로 리디렉션
+            } else {
+                alert('Failed to save data.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error occurred while saving the data.');
+        });
+    });
+}
+
 
