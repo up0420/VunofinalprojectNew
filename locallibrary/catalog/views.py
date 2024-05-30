@@ -378,7 +378,7 @@ def login_view(request):
     
 # 로그아웃
 from django.contrib.auth import logout as auth_logout
-
+from django.contrib.auth import logout
 # def logout_view(request):
 #     auth_logout(request)
 #     request.session.flush()
@@ -387,14 +387,8 @@ from django.contrib.auth import logout as auth_logout
 
 @csrf_exempt
 def logout_view(request):
-    if request.method == 'POST':
-        auth_logout(request)
-        request.session.flush()
-        response = JsonResponse({'message': 'Logged out successfully'})
-        response.delete_cookie('sessionid')
-        return response
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    logout(request)
+    return redirect('/')
 
 
 #mir에 저장하기

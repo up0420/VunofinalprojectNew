@@ -195,7 +195,21 @@
                 updateBoard(1);
             });
         });
+        
 
+        //로그아웃 기능
+        $(document).ready(function() {
+            // Existing JavaScript code...
+
+            // Confirm logout action
+            $('#logout-btn').click(function(e) {
+                e.preventDefault();
+                var logout = confirm('로그아웃하시겠습니까?');
+                if (logout) {
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        });
         // 로그아웃 버튼 클릭 시 실행
         {% comment %} $('#logout-btn').click(function() {
             var logout = confirm('로그아웃하시겠습니까?');
