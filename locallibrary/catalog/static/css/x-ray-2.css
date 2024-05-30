@@ -73,7 +73,6 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    pointer-events: none;
 }
 
 .thumbnail-images {
@@ -100,9 +99,9 @@ body {
     margin-bottom: 20px;
     gap: 10px;
     position: absolute;
-    top: 50%;
-    left: 55%;
-    border: 1px solid #ccc;
+    top: 47%;
+    left: 53%;
+    border: 1px solid gray;
     border-radius: 10px;
     padding: 7px 10px;
 }
@@ -120,16 +119,24 @@ body {
 
 .zoom-area {
     position: absolute;
-    top: 50%;
-    left: 59%;
+    top: 53%;
+    left: 57%;
 }
 
 #zoom-range {
     visibility: hidden;
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical;
     width: 8px;
     height: 130px;
+}
+
+#contrast-slider {
+    visibility: hidden;
+    width: 8px;
+    height: 130px;
+}
+
+#return{
+    margin-top: 4px;
 }
 
 .diagnosis-panel {
