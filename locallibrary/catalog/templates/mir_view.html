@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>X-Ray Analysis</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/mir_view.css' %}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+
+<body>
+    <div class="header">
+        <div class="icon-container" role="button" aria-label="Back" onclick="goBack()"><i class="fi fi-br-arrow-left"></i></div>
+        <div class="header-patient">{{ patient.PAT_NAME }}({{ patient.PAT_BIRTH }})</div>
+        <span>CHEST MATE</span>
+    </div>
+
+    <!-- x-ray image area -->
+    <div class="container">
+        <div class="image-gallery">
+            <div class="main-container">
+                <p>Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p>
+                <img id="main-image" src="" alt="Main X-Ray Image">
+                <canvas id="drawing-canvas"></canvas>
+            </div>
+            <div>
+                <input type="file" id="image-input" accept="image/*" style="display:none;">
+                <button id="add-image">Add</button>
+                <button id="analysis" onclick="updateBar()">Analysis</button>
+                <button id="save-image">Save</button>
+            </div>
+            <div class="thumbnail-images">
+                <img class="thumbnail" src="" alt="X-Ray Thumbnail 1">
+                <img class="thumbnail" src="" alt="X-Ray Thumbnail 2">
+                <img class="thumbnail" src="" alt="X-Ray Thumbnail 3">
+            </div>
+        </div>
+
+
+        <!-- 진단 area -->
+        <div class="diagnosis-panel">
+            <div class="diagnosis-header">Diagnosis of Lesions</div>
+            <div class="opinion-title">AI Opinion</div>
+            <div class="diagnosis-details">
+                <div class="findings-container hidden">
+                    <div class="findings-names" id="finding1">Effusion</div>
+                    <div class="bar-container">
+                        <div class="bar" id="bar1"></div>
+                    </div>
+                    <div class="percentage" id="percentageText1">0%</div>
+                </div>
+                
+                <div class="findings-container hidden">
+                    <div class="findings-names" id="finding2">Consolidation</div>
+                    <div class="bar-container">
+                        <div class="bar" id="bar2"></div>
+                    </div>
+                    <div class="percentage" id="percentageText2">0%</div>
+                </div>
+                
+                <div class="findings-container hidden">
+                    <div class="findings-names" id="finding3">Fibrosis</div>
+                    <div class="bar-container">
+                        <div class="bar" id="bar3"></div>
+                    </div>
+                    <div class="percentage" id="percentageText3">0%</div>
+                </div>
+            </div>
+            <div class="ai-opinion">
+                <div class="diagnosis-details ai-opinion-box"><span id="ai-opinion">ai 소견</span></div>
+            </div>
+            <div class="doctor-opinion">
+                <div class="opinion-title">Doctor Opinion</div>
+                <textarea id="doctor-opinion" rows="15" cols="62"></textarea>
+            </div>
+            <div class="form-actions">
+                <button id="submit">Submit</button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/mir_view.js' %}"></script>
+</body>
+
+</html>
