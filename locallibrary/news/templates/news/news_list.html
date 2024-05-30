@@ -11,7 +11,7 @@
     <header>
         <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
         <ul class="header_menu">
-            {% if id == null %}
+            {% if request.session.doc_id %}
                 <li><a class="upper" href="{% url 'board' %}">Home</a></li>
                 <li><a class="upper" href="{% url 'board_all' %}">All</a></li>
                 <li><a class="upper" id="logout-btn" href="{% url 'logout_view' %}"><i class="fi fi-ss-exit"></i></a></li>
