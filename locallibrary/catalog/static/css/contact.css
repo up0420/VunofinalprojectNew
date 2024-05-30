@@ -1,0 +1,226 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+section {
+    margin: 0; /* section의 margin 제거 */
+    padding: 0; /* section의 padding 제거 */
+}
+
+.video-section {
+    position: relative;
+    width: 100%; /* 너비를 조정하여 동영상이 가로 전체에 나타나도록 함 */
+    height: 100vh; /* 섹션의 높이를 화면 전체 높이로 설정 */
+}
+
+video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%; /* 최소 너비를 100%로 설정하여 비디오를 화면에 맞춤 */
+    min-height: 100%; /* 최소 높이를 100%로 설정하여 비디오를 화면에 맞춤 */
+    width: auto;
+    height: auto;
+    z-index: -1;
+}
+
+section:nth-child(2) {
+    margin-top: 100vh;
+}
+
+/* 두 번째 섹션 내의 동영상에 대한 스타일 수정 */
+section:nth-child(2) video {
+    position: absolute;
+    top: 100%; /* 첫 번째 섹션 끝에서부터 위치 */
+    left: 0;
+    width: 100%; /* 가로 너비를 화면 전체 너비로 고정 */
+    max-width: 100vw; /* 최대 가로 너비를 화면 전체 너비로 고정 */
+    height: auto; /* 비디오의 높이는 자동으로 조정되도록 설정 */
+    min-height: 80%; /* 최소 높이를 100%로 설정하여 비디오를 화면에 맞춤 */
+    object-fit: cover;  /* 비디오가 세로로 스크롤되면서도 화면에 가득 차도록 설정 */
+    z-index: -1;
+}
+
+/* boxes 클래스에 대한 스타일 수정 */
+.boxes {
+    display: flex;
+    flex-direction: column;
+    min-height: 200vh; /* 최소 높이를 화면 전체 높이의 두 배로 설정하여 두 개의 섹션을 표시할 수 있도록 함 */
+    height: 100vh;
+    scroll-behavior: smooth;
+    scroll-snap-type: yx;
+}
+.box {
+    z-index: 1;
+    text-align: center;
+    color: white;
+}
+
+.textBox1,
+.textBox2 {
+    opacity: 0;
+    animation: updown 12s infinite;
+}
+
+.textBox1 {
+    animation-delay: 6s;
+}
+
+.textBox2 {
+    animation-delay: 12s;
+}
+@keyframes updown {
+    0%, 100% { transform: translateY(0); opacity: 0; }
+    50% { transform: translateY(-50px); opacity: 1; }
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2; /* 헤더가 동영상 위에 올라가도록 설정 */
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+    margin: 0;
+    padding: 10px;
+    left: 0;
+    color: white;
+}
+
+.header_menu {
+    margin: 0;
+    padding: 10px;
+    right: 0;
+    width: auto;
+    padding: 10px;
+    list-style: none;
+    align-items: center;
+    display: flex;
+    vertical-align: middle;
+}
+
+
+.header_menu li {
+    margin-right: 20px;
+}
+
+.header_menu li a {
+    color: white;
+    text-decoration: none;
+}
+
+a.upper {
+    text-transform: uppercase;
+}
+
+li {
+    list-style: none;
+    padding: 0px 24px;
+    font-size: 1.2em;
+    transition: .5s;
+}
+
+li:hover {
+    transition: .5s;
+    transform: translateY(-10px);
+}
+
+.example {
+
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: left;
+    font-size: 50px;
+    z-index: 2;
+
+}
+
+.example p {
+    margin-bottom: 10px;
+    /* 각 슬로건 사이의 간격 조정 */
+}
+
+.auth-container {
+    position: absolute;
+    top: 50%;
+    right: 100px;
+    transform: translate(0, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 350px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="password"] {
+    width: 94%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.auth-container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    margin: 10px auto;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.auth-container input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* 로그인과 회원가입 버튼 스타일 */
+.auth-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-buttons button {
+    margin: 0 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    color: black (13, 13, 13);
+    cursor: pointer;
+   
+}
+
+.auth-buttons button:hover {
+    background-color: #e1edfb;
+}
