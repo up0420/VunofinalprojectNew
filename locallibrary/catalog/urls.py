@@ -19,7 +19,12 @@ urlpatterns = [
     path('analyze/', views.analyze_image, name='analyze_image'), 
     path('login/', views.login_view, name='login_view'),
     path('save_mir/', views.save_mir, name='save_mir'),
-    
+    path('mir_view/', views.mir_view, name='mir_view'),
+    path('get_mir_data/', views.get_mir_data, name='get_mir_data'),
+    path('get_ximage_id/', views.get_ximage_id, name='get_ximage_id'),
+
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

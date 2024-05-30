@@ -226,8 +226,6 @@ def get_patient_data(request):
     return JsonResponse(data, safe=False)\
 
 def get_allpatient_data(request):
-    
-
     search_date_start = request.GET.get('search_date_start')
     search_date_end = request.GET.get('search_date_end')
     search_name = request.GET.get('search_name')
@@ -425,5 +423,49 @@ def save_mir(request):
         print("Invalid request method:", request.method)
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+#mir_view
+def mir_view(request):
+    patient_id = request.GET.get('patient_id')
+    if not patient_id:
+        # patient_id가 없을 경우에 대한 처리
+        return render(request, 'error.html', {'message': 'No patient ID provided.'})
+
+    patient = get_object_or_404(Patient, PAT_ID=patient_id)
+    return render(request, 'mir_view.html', {'patient': patient})
+
+# mir data 가져오기
+from django.http import JsonResponse
+from .models import XImage, MIR
+def get_mir_data(request):
+    ximage_id = request.GET.get('ximage_id')
+    if not ximage_id:
+        return JsonResponse({'success': False, 'error': 'No ximage_id provided'})
+    
+    try:
+        ximage = XImage.objects.get(XIMAGE_ID=ximage_id)
+        mir_data = MIR.objects.get(XIMAGE_ID=ximage)
+        return JsonResponse({
+            'success': True,
+            'ai_opinion': mir_data.MIR_RESULT,
+            'doctor_opinion': mir_data.MIR_MIR
+        })
+    except XImage.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'XImage not found'})
+    except MIR.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'MIR data not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
 
+def get_ximage_id(request):
+    image_path = request.GET.get('image_path')
+    if not image_path:
+        return JsonResponse({'success': False, 'error': 'No image_path provided'})
+    
+    try:    
+        ximage = XImage.objects.get(XIMAGE_PATH=image_path)
+        return JsonResponse({'success': True, 'ximage_id': ximage.XIMAGE_ID})
+    except XImage.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'XImage not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
