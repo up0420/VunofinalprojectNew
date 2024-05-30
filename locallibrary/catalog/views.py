@@ -148,7 +148,8 @@ def board(request):
     return render(request, 'board.html')
 def boardAll(request):
     return render(request, 'board_all.html')
-
+def contact(request):
+    return render(request, 'contact.html')
 
 # 비동기 게시판 구현
 """ from django.http import JsonResponse

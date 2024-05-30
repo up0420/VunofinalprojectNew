@@ -22,6 +22,7 @@ urlpatterns = [
     path('mir_view/', views.mir_view, name='mir_view'),
     path('get_mir_data/', views.get_mir_data, name='get_mir_data'),
     path('get_ximage_id/', views.get_ximage_id, name='get_ximage_id'),
+    path('contact', views.contact, name = 'contact'),
 
 ]
 
