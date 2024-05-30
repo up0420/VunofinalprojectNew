@@ -1,0 +1,218 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #ccc;
+    overflow: hidden; /* 스크롤 제거 */
+}
+
+/* 헤더 스타일 */
+.header {
+    width: 100%;
+    padding: 20px; /* 패딩을 늘려서 간격 조정 */
+    background-color: #22252E;
+    color: #f9f9f9;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between; /* 요소들 사이에 공간을 둡니다 */
+    align-items: center;
+    position: relative; /* 위치 설정을 위해 상대 위치 지정 */
+}
+
+.icon-container {
+    position: absolute;
+    left: 20px; /* 왼쪽 끝으로 이동 */
+    cursor: pointer;
+}
+
+.header-patient {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center; /* 중앙 정렬 */
+}
+
+.header span {
+    position: absolute;
+    right: 20px; /* 오른쪽 끝으로 이동 */
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+    height: calc(100vh - 90px); /* 헤더를 제외한 전체 화면 높이 */
+}
+
+.main-container {
+    overflow: hidden;
+    margin-bottom: 10px;
+    width: 550px;
+    position: relative;
+    flex-grow: 1; /* 크기 조정 */
+}
+
+.image-gallery {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-image {
+    width: 100%;
+    height: auto;
+    transition: filter 0.3s ease;
+}
+
+#drawing-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.thumbnail-images {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.thumbnail {
+    width: 100px;
+    margin: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.thumbnail:hover {
+    transform: scale(1.1);
+}
+
+
+.diagnosis-panel {
+    flex: 1;
+    padding: 20px;
+    margin-left: 20px;
+    background-color: #22252E;
+    color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.diagnosis-header {
+    font-size: 20px;
+    margin-bottom: 20px;
+    background-color: #30343D;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    width: 90%;
+}
+
+.diagnosis-details {
+    margin-bottom: 10px;
+    padding: 7px 20px;
+    align-items: center;
+    width: 90%;
+    height: 100px;
+    background-color: #30343D;
+    border-radius: 5px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.findings-container {
+    display: flex;
+    margin-top: 2px;
+}
+
+.bar-container {
+    width: 60%;
+    overflow: hidden;
+    margin: 5px 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.bar {
+    height: 20px;
+    width: 0;
+    background-color: #76c7c0;
+    transition: width 0.5s ease-in-out;
+}
+
+.findings-names {
+    width: 30%;
+    margin: 5px 0;
+    text-align: right;
+}
+
+.percentage {
+    margin: 5px 0;
+}
+
+.opinion-title {
+    text-align: center;
+    margin: 3px;
+    margin-bottom: 10px;
+}
+
+.ai-opinion {
+    margin-bottom: 20px;
+    width: 90%;
+}
+
+.ai-opinion-box {
+    align-content: center;
+    text-align: center;
+    width: 100%;
+}
+
+#ai-opinion{
+    color: #f9f9f9;
+}
+
+.doctor-opinion {
+    width: 100%; /* 가로 폭을 diagnosis-panel 내부에 맞추기 */
+    align-content: center;
+    text-align: center;
+}
+
+textarea {
+    resize: none;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #30343D;
+    border-radius: 5px;
+    border: none;
+    color: #ccc;
+    width: calc(100% - 40px); /* 너비 조정 */
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* 가로 폭을 diagnosis-panel 내부에 맞추기 */
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #30343D;
+    border-radius: 3px;
+    color: #f9f9f9;
+}
+
+#submit {
+    width: 30%;
+    border-radius: 2px;
+}
