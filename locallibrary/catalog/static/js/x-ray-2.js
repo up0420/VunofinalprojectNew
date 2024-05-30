@@ -259,6 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const zoomInIcon = document.getElementById("zoom-in-icon");
     const zoomOutIcon = document.getElementById("zoom-out-icon");
     const mainImage = document.getElementById("main-image");
+    const canvas = document.getElementById('drawing-canvas');
     let currentScale = 1; // 이미지 1배율 = 원래크기
     let initialX = 0;
     let initialY = 0;
@@ -314,6 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function applyTransform() {
         mainImage.style.transform = `scale(${currentScale})  translate(${xOffset}px, ${yOffset}px)`;
     }
+
 });
 
 
@@ -355,7 +357,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // 그리기 활성화
 document.addEventListener('DOMContentLoaded', () => {
-
     const penIcon = document.getElementById('penIcon');
     const mainImage = document.getElementById('main-image');
     const canvas = document.getElementById('drawing-canvas');
@@ -408,6 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
+
 });
 
 
