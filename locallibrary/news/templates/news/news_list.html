@@ -20,7 +20,7 @@
             {% else %}
                 <li><a class="upper" href="{% url 'main' %}">Home</a></li>
             {% endif %}
-            <li><a class="upper" href="">Contact</a></li>
+            <li><a class="upper" href="{% url 'contact' %}">ABOUT US</a></li>
             <li><a class="upper" href="{% url 'news_list' %}">NEWS</a></li>
             <li><a class="upper" href="">Q&A</a></li>
             {% if request.session.doc_id %}
