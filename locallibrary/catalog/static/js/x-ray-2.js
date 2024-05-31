@@ -1,6 +1,6 @@
 
 // AI Analysis
-document.getElementById('analysis').addEventListener('click', function() {
+document.getElementById('analysis').addEventListener('click', function () {
     var imagePath = document.getElementById('main-image').getAttribute('src');
     console.log('imagePath' + imagePath)
     fetch(`/catalog/analyze/?image_path=${imagePath}`)
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // 초기 썸네일 이미지에 이벤트 리스너 추가 
     // 메인 <-> 썸네일 이미지 전환 
     initializeThumbnails();
-}); 
+});
 
 
 // 썸네일 비우는 함수
@@ -37,7 +37,7 @@ function clearThumbnails() {
 // 메인 이미지를 설정하는 함수
 function setMainImage(imageUrl) {
     var mainImage = document.getElementById('main-image');
-   
+
     mainImage.src = `media/${imageUrl}`;
     console.log('mainImage: ' + mainImage);
     console.log('imgurl: ' + imageUrl);
@@ -46,7 +46,7 @@ function setMainImage(imageUrl) {
 
     // // main-container 요소를 가져옵니다.
     // var mainContainer = document.querySelector('.main-container');
-    
+
     // // mainImage를 main-container에 추가합니다.
     // mainContainer.appendChild(mainImage);
 }
@@ -62,7 +62,7 @@ function addThumbnail(imageUrl) {
     thumbnailImagesDiv.appendChild(newImage);
 
     // 새로 추가된 썸네일에 이벤트 리스너 추가
-    newImage.addEventListener('click', function() {
+    newImage.addEventListener('click', function () {
         setMainImage(imageUrl); // 이미지 클릭시 메인이미지로 변경
     });
 }
@@ -72,7 +72,7 @@ function addThumbnail(imageUrl) {
 function initializeThumbnails() {
     const thumbnails = document.querySelectorAll('.thumbnail');
     thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function() {
+        thumbnail.addEventListener('click', function () {
             setMainImage(thumbnail.src.replace(window.location.origin + '/', ''));
         });
     });
@@ -80,36 +80,36 @@ function initializeThumbnails() {
 
 
 // add 버튼 클릭 시 이미지 추가 
-document.getElementById('add-image').addEventListener('click', function() {
+document.getElementById('add-image').addEventListener('click', function () {
     document.getElementById('image-input').click();
 });
 
 // 썸네일 + 메인이미지 변경
-document.getElementById('image-input').addEventListener('change', function(event) {
+document.getElementById('image-input').addEventListener('change', function (event) {
     var file = event.target.files[0];
 
     if (file) {
         var reader = new FileReader(); // 선택된 파일을 FileReader 를 통해 읽기
-        
-        reader.onload = function(e) {
+
+        reader.onload = function (e) {
             var newImage = document.createElement('img');
-            newImage.src = e.target.result ;  // e.target은 FileReader 객체이고, result는 읽은 파일의 데이터 URL
+            newImage.src = e.target.result;  // e.target은 FileReader 객체이고, result는 읽은 파일의 데이터 URL
             newImage.className = 'thumbnail';
             newImage.alt = 'New X-Ray Thumbnail';
             console.log('add image 경로 : ' + newImage.src);
             var thumbnailImagesDiv = document.querySelector('.thumbnail-images');
-            thumbnailImagesDiv.appendChild(newImage.cloneNode());  
+            thumbnailImagesDiv.appendChild(newImage.cloneNode());
 
             var mainImage = document.getElementById('main-image');
             mainImage.src = e.target.result;
 
 
             // 새로 추가된 썸네일에 이벤트 리스너 추가
-            newImage.addEventListener('click', function() {
+            newImage.addEventListener('click', function () {
                 setMainImage(newImage.src);
             });
         }
-        
+
         reader.readAsDataURL(file);  // 파일의 데이터를 Base64 인코딩된 데이터 URL로 변환
     } else {
         alert("Please select an image file.");
@@ -140,21 +140,21 @@ document.getElementById('save-image').addEventListener('click', () => {
                 'X-CSRFToken': getCookie('csrftoken')
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.success) {
-                console.log(data)
-                alert('Image saved successfully!');
-            } else {
-                console.log(data)
-                console.log(patientId)
-                alert('Failed to save image.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error occurred while saving the image.');
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    console.log(data)
+                    alert('Image saved successfully!');
+                } else {
+                    console.log(data)
+                    console.log(patientId)
+                    alert('Failed to save image.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error occurred while saving the image.');
+            });
     } else {
         alert('No image selected.');
     }
@@ -176,7 +176,7 @@ function getCookie(name) {
 }
 
 // 페이지가 로드될 때 실행되는 함수
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function () {
     loadPatientImages(); // 환자의 이미지를 불러오는 함수 호출
 });
 
@@ -189,13 +189,13 @@ function loadPatientImages() {
     }
 
     console.log(`Fetching images for patient_id: ${patientId}`);
-    
+
     // AJAX 요청을 보냅니다.
     fetch(`get_patient_images/?patient_id=${patientId}`)
         .then(response => response.json())
         .then(data => {
             // 데이터 형태확인
-            console.log('Received data:', data, 'patientId:', patientId); 
+            console.log('Received data:', data, 'patientId:', patientId);
             // data가 배열인지 확인 (환자 한명당 사진이 여러개인지 확인)
             if (Array.isArray(data.images) && data.images.length > 0) {
                 // 이미지 목록 로드
@@ -229,8 +229,8 @@ function goBack() {
 function updateBar() {
     // hidden 해놓은 ai 소견 내역을 visible로 변경하기
     var hiddenElements = document.querySelectorAll('.hidden');
-    
-    hiddenElements.forEach(function(element) {
+
+    hiddenElements.forEach(function (element) {
         element.classList.remove('hidden');
     });
 
@@ -255,93 +255,98 @@ function updateBar() {
 
 
 // 이미지 확대 축소 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const zoomInIcon = document.getElementById("zoom-in-icon");
     const zoomOutIcon = document.getElementById("zoom-out-icon");
-    const zoomRange = document.getElementById("zoom-range");
     const mainImage = document.getElementById("main-image");
-    let currentScale = 1;
+    let currentScale = 1; // 이미지 1배율 = 원래크기
     let initialX = 0;
     let initialY = 0;
-    let xOffset = 0;
-    let yOffset = 0;
+    let xOffset = 0;      // X축
+    let yOffset = 0;      // Y축
     let isMouseDown = false;
 
-    zoomInIcon.addEventListener("click", function() {
-        if(zoomRange.style.visibility == "visible"){
-            zoomRange.style.visibility = "hidden";
-        }else{
-            zoomRange.style.visibility = "visible";
-        }
-
-        if (currentScale < 2) { // 최대 확대 배율 설정
-            currentScale += 0.1;
+    zoomInIcon.addEventListener("click", function () {
+        if (currentScale < 2) {  // 최대 확대 배율 설정
+            currentScale += 0.1; // 10% 확대
             applyTransform();
+            moveImage(); // 이미지 이동 가능 함수 호출
         }
     });
 
-    zoomOutIcon.addEventListener("click", function() {
+    zoomOutIcon.addEventListener("click", function () {
         if (currentScale > 0.5) { // 최소 축소 배율 설정
-            currentScale -= 0.1;
+            currentScale -= 0.1;  // 10% 축소
             applyTransform();
+            moveImage(); // 이미지 이동 가능 함수 호출
         }
     });
 
-    zoomRange.addEventListener("input", function() {
-        currentScale = parseFloat(zoomRange.value) / 100;
-        applyTransform();
-    });
+    // 이미지 위치를 이동시킬 수 있는 함수
+    function moveImage() {
+        // 마우스로 이미지 이동
+        mainImage.addEventListener("mousedown", function (event) {
+            isMouseDown = true;
+            initialX = event.clientX - xOffset;
+            initialY = event.clientY - yOffset;
+            mainImage.style.cursor = 'grabbing'; // 마우스 커서 변경
+            event.preventDefault();  // 기본 동작 방지 (이미지 드래그 방지)
+        });
 
-    // 마우스로 이미지 이동
-    mainImage.addEventListener("mousedown", function(event) {
-        isMouseDown = true;
-        initialX = event.clientX - xOffset;
-        initialY = event.clientY - yOffset;
-    });
+        // 마우스로 이미지 이동
+        mainImage.addEventListener("mouseup", function () {
+            isMouseDown = false;
+        });
 
-    // 마우스로 이미지 이동
-    mainImage.addEventListener("mouseup", function() {
-        isMouseDown = false;
-    });
+        // 마우스로 이미지 이동
+        mainImage.addEventListener("mousemove", function (event) {
+            if (isMouseDown) {
+                const mouseX = event.clientX - initialX;
+                const mouseY = event.clientY - initialY;
+                xOffset = mouseX;
+                yOffset = mouseY;
+                applyTransform();
+            }
+        });
+    }
 
-    // 마우스로 이미지 이동
-    mainImage.addEventListener("mousemove", function(event) {
-        if (isMouseDown) {
-            const mouseX = event.clientX - initialX;
-            const mouseY = event.clientY - initialY;
-            xOffset = mouseX;
-            yOffset = mouseY;
-            applyTransform();
-        }
-    });
-    
-
+    // 확대/축소 배율을 이미지에 적용
     function applyTransform() {
         mainImage.style.transform = `scale(${currentScale})  translate(${xOffset}px, ${yOffset}px)`;
-    } /* 이미지 위치 : translate(${xOffset}px, ${yOffset}px) */
+    }
 });
 
 
 
 // 새로고침 버튼
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const returnButton = document.getElementById("return");
     const mainImage = document.getElementById("main-image");
-    let currentScale = 1;
-
+    const contrastSlider = document.getElementById('contrast-slider');
+    const contrastIcon = document.getElementById('contrast-icon');
     const canvas = document.getElementById('drawing-canvas');
     const ctx = canvas.getContext('2d');
-    
-    returnButton.addEventListener("click", function() {
+    let currentScale = 1;
+
+    returnButton.addEventListener("click", function () {
         // 이미지 크기 되돌리기
         currentScale = 1;
         mainImage.style.transform = `scale(${currentScale})`;
         mainImage.style.transformOrigin = "center center";
-        
+
         // 그림 있다면 지우기
-        if (canvas.style.pointerEvents === 'auto') {
+        if (canvas.style.pointerEvents == 'auto') {
             canvas.style.pointerEvents = 'none';
             ctx.clearRect(0, 0, canvas.width, canvas.height); // 그려져 있다면 지워버리기
+        }
+        // 대비가 적용되어 있다면 되돌리기
+        if (contrastSlider.style.visibility == "visible") {
+            contrastSlider.value = 100;
+            mainImage.style.filter = `contrast(${contrastSlider.value}%)`;
+            contrastSlider.style.visibility = "hidden";
+        } else {
+            contrastSlider.value = 100;
+            mainImage.style.filter = `contrast(${contrastSlider.value}%)`;
         }
     });
 });
@@ -350,7 +355,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // 그리기 활성화
 document.addEventListener('DOMContentLoaded', () => {
-    const penIcon = document.querySelector('.fi.fi-sr-pen-nib');
+
+    const penIcon = document.getElementById('penIcon');
     const mainImage = document.getElementById('main-image');
     const canvas = document.getElementById('drawing-canvas');
     const ctx = canvas.getContext('2d');
@@ -387,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 아이콘 클릭 시 캔버스 활성화/비활성화
     penIcon.addEventListener('click', () => {
-        if (canvas.style.pointerEvents === 'none') {
+        if (canvas.style.pointerEvents == 'none') {
             canvas.style.pointerEvents = 'auto';
             ctx.strokeStyle = 'red'; // 선 색상
             ctx.lineWidth = 2; // 선 두께
@@ -405,36 +411,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// 대비 조절 
 document.addEventListener('DOMContentLoaded', () => {
-    const svgIcon = document.querySelector('.fi');
+    const contrastSlider = document.getElementById('contrast-slider');
+    const contrastIcon = document.getElementById('contrast-icon');
     const mainImage = document.getElementById('main-image');
-    let brightness = 1;
 
-    svgIcon.addEventListener('click', () => {
-        // 명암을 조절하는 로직 (값을 토글)
-        brightness = brightness === 1 ? 0.5 : 1; // 예시: 1과 0.5 사이를 토글
-        mainImage.style.filter = `brightness(${brightness})`;
+    // 아이콘 클릭 시 대비 조절 바 생성
+    contrastIcon.addEventListener("click", function () {
+        if (contrastSlider.style.visibility == "visible") {
+            contrastSlider.style.visibility = "hidden";
+        } else {
+            contrastSlider.style.visibility = "visible";
+        }
+    });
+
+    contrastSlider.addEventListener('input', () => {
+        const contrastValue = contrastSlider.value;
+        mainImage.style.filter = `contrast(${contrastValue}%)`;
     });
 });
 
 
-
-// // 대비 조절  
-// document.addEventListener('DOMContentLoaded', () => {
-//     const contrastSlider = document.getElementById('contrast-slider');
-//     const mainImage = document.getElementById('main-image');
-
-//     contrastSlider.addEventListener('input', () => {
-//         const contrastValue = contrastSlider.value;
-//         mainImage.style.filter = `contrast(${contrastValue}%)`;
-//     });
-// });
-
-// submit 후 저장
-
 console.log("JavaScript file loaded.");
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Document is ready.');
     setupSubmitButton();
 });
@@ -447,7 +448,7 @@ function setupSubmitButton() {
     }
     console.log('Submit button found. Adding event listener.');
 
-    submitButton.addEventListener('click', function() {
+    submitButton.addEventListener('click', function () {
         console.log('Submit button clicked.');
         const aiOpinionElement = document.getElementById('ai-opinion');
         const doctorOpinionElement = document.getElementById('doctor-opinion');
@@ -492,25 +493,25 @@ function setupSubmitButton() {
                 'image_url': imageUrl
             })
         })
-        .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response URL:', response.url);
-            console.log('Response type:', response.type);
-            return response.json();
-        })
-        .then(data => {
-            console.log('Response data:', data);
-            if (data.success) {
-                alert('Data saved successfully!');
-                window.location.href = '/catalog/board'; // 저장 후 board 페이지로 리디렉션
-            } else {
-                alert('Failed to save data.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error occurred while saving the data.');
-        });
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response URL:', response.url);
+                console.log('Response type:', response.type);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    alert('Data saved successfully!');
+                    window.location.href = '/catalog/board'; // 저장 후 board 페이지로 리디렉션
+                } else {
+                    alert('Failed to save data.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error occurred while saving the data.');
+            });
     });
 }
 

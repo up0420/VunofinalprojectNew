@@ -22,8 +22,8 @@
     <div class="container">
         <div class="image-gallery">
             <div class="main-container">
-                <p>Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p>
-                <img id="main-image" src="" alt="Main X-Ray Image">
+               {% comment %}  <p>Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p> {% endcomment %}
+                <img id="main-image" src="">
                 <canvas id="drawing-canvas"></canvas>
             </div>
             <div>
@@ -33,9 +33,9 @@
                 <button id="save-image">Save</button>
             </div>
             <div class="thumbnail-images">
-                <img class="thumbnail" src="" alt="X-Ray Thumbnail 1">
-                <img class="thumbnail" src="" alt="X-Ray Thumbnail 2">
-                <img class="thumbnail" src="" alt="X-Ray Thumbnail 3">
+                <img class="thumbnail" src="">
+                <img class="thumbnail" src="">
+                <img class="thumbnail" src="">
             </div>
         </div>
 
@@ -43,8 +43,8 @@
         <div class="toolbar">
             <i class="fi fi-sr-zoom-in" id="zoom-in-icon" aria-label="Zoom In"></i>
             <i class="fi fi-sr-zoom-out" id="zoom-out-icon" aria-label="Zoom Out"></i>
-            <i class="fi fi-sr-pen-nib" aria-label="Draw"></i>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" aria-label="Adjust Contrast">
+            <i class="fi fi-sr-pen-nib" id="penIcon" aria-label="Draw"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" aria-label="Adjust Contrast" id="contrast-icon">
                 <path class="fi fi-sr-pen-nib" fill="#ccc" fill-rule="evenodd"
                     d="M68,121 C72.9705627,121 77,116.970563 77,112 C77,107.029437 72.9705627,103 68,103 C63.0294373,103 59,107.029437 59,112 C59,116.970563 63.0294373,121 68,121 Z M68,119.8 C72.2313475,119.8 75.8,116.307821 75.8,112 C75.8,108.076069 72.6281738,104.2 68,104.2 L68,119.8 Z"
                     transform="matrix(-1 0 0 1 77 -103)" />
@@ -52,7 +52,7 @@
             <i class="fi fi-br-rotate-right" id="return" aria-label="Reset"></i>
         </div>
         <div class="zoom-area">
-            <input type="range" min="50" max="200" value="100" id="zoom-range" aria-label="Zoom Range">
+            <input type="range"  id="contrast-slider" min="50" max="170" value="100" style="writing-mode: vertical-lr; direction: rtl">
         </div>
 
         <!-- 진단 area -->

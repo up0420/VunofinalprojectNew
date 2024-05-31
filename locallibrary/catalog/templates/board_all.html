@@ -20,7 +20,7 @@
                 <li><a class="upper" href="{% url 'board' %}">Home</a></li>
                 <li><a class="upper" href="{% url 'board_all' %}">All</a></li>
                 <li><a class="upper" href="">Contact</a></li>
-                <li><a class="upper" href="">NEWS</a></li>
+                <li><a class="upper" href="{% url 'news_list' %}">NEWS</a></li>
                 <li><a class="upper" href="">Q&A</a></li>
                 <li><a class="upper" id="logout-btn" href="{% url 'logout' %}"><i class="fi fi-ss-exit"></i></a></li>
             </ul>
@@ -126,7 +126,7 @@
 
             patients.forEach(function(patient, index) {
                 var newRow = '<tr><td>' + ((currentPage - 1) * 5 + index + 1) + '</td>' +
-                             '<th class="title-align"><a href="/catalog/x-ray-2?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
+                             '<th class="title-align"><a href="/catalog/mir_view?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
                              '<td>' + patient.birthdate + '</td>' +
                              '<td>' + (patient.mir_data ? patient.mir_data.date : '') + '</td></tr>';
                 $('#patient-data').append(newRow);
