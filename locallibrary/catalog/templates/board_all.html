@@ -19,7 +19,7 @@
             <ul class="header_menu">
                 <li><a class="upper" href="{% url 'board' %}">Home</a></li>
                 <li><a class="upper" href="{% url 'board_all' %}">All</a></li>
-                <li><a class="upper" href="">Contact</a></li>
+                <li><a class="upper" href="{% url 'contact' %}">ABOUT US</a></li>
                 <li><a class="upper" href="{% url 'news_list' %}">NEWS</a></li>
                 <li><a class="upper" href="">Q&A</a></li>
                 <li><a class="upper" id="logout-btn" href="{% url 'logout_view' %}"><i class="fi fi-ss-exit"></i></a></li>
@@ -130,7 +130,7 @@
                     var newRow = '<tr><td>' + ((currentPage - 1) * 5 + index + 1) + '</td>' +
                                  '<th class="title-align"><a href="/catalog/mir_view?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
                                  '<td>' + patient.birthdate + '</td>' +
-                                 '<td>' + (patient.mir_data ? patient.mir_data.date : '') + '</td></tr>';
+                                 '<td>' + (patient.mir_data && patient.mir_data.date ? patient.mir_data.date : '2024-06-07') + '</td></tr>';
                     $('#patient-data').append(newRow);
                 });
         
