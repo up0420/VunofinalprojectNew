@@ -94,115 +94,115 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        var currentPage = 1;  // 현재 페이지를 추적
-        var totalPages = 1;  // 전체 페이지 수
-
-        function updateBoard(pageNumber) {
-            const search_date_start = $('#search_date_start').val();
-            const search_date_end = $('#search_date_end').val();
-            const search_name = $('#search_name').val();
-            const search_major = $('#major').val();
-            $.ajax({
-                url: '{% url "get_allpatient_data" %}',
-                type: 'GET',
-                data: {
-                    'page': pageNumber,
-                    'search_date_start': search_date_start,
-                    'search_date_end': search_date_end,
-                    'search_name': search_name,
-                    'search_major': search_major
-                },
-                success: function(data) {
-                    updatePage(data.patients, data.total_pages); // 데이터 업데이트
-                    currentPage = pageNumber;  // 현재 페이지 업데이트
-                    totalPages = data.total_pages;  // 전체 페이지 수 업데이트
-                }
-            });
-        }
-
-        function updatePage(patients, totalPagesCount) {
-            totalPages = totalPagesCount;  // 전체 페이지 수 업데이트
-            $('#patient-data').empty(); // 기존의 게시판 내용 비우기
-
-            patients.forEach(function(patient, index) {
-                var newRow = '<tr><td>' + ((currentPage - 1) * 5 + index + 1) + '</td>' +
-                             '<th class="title-align"><a href="/catalog/mir_view?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
-                             '<td>' + patient.birthdate + '</td>' +
-                             '<td>' + (patient.mir_data ? patient.mir_data.date : '') + '</td></tr>';
-                $('#patient-data').append(newRow);
-            });
-
-            var emptyRows = 5 - patients.length;
-            for (var i = 0; i < emptyRows; i++) {
-                var emptyRow = '<tr><td>&nbsp;</td>' +
-                            '<td>&nbsp;</td>' +
-                            '<td>&nbsp;</td>' +
-                            '<td>&nbsp;</td></tr>';
-                $('#patient-data').append(emptyRow);
-            }
-
-            updatePageButtons(totalPages);
-        }
-
-        function updatePageButtons(totalPages) {
-            var paginationElement = $('#pagination');
-            paginationElement.empty(); // 기존의 페이징 버튼들을 모두 비웁니다.
-
-            paginationElement.append('<a class="arrow pprev" href="#"><i class="fi fi-bs-angle-double-small-left"></i></a>');
-            paginationElement.append('<a class="arrow prev" href="#"><i class="fi fi-bs-angle-small-left"></i></a>');
-
-            for (var i = 1; i <= totalPages; i++) {
-                var pageLink = $('<a href="#" class="page-link">' + i + '</a>');
-                pageLink.data('page', i);
-                if (i == currentPage) {
-                    pageLink.addClass('active'); // 현재 페이지에 active 클래스 추가
-                }
-                pageLink.attr('href', '#'); // 페이지 번호에 해당하는 URL을 설정합니다.
-                paginationElement.append(pageLink);
-            }
-
-            paginationElement.append('<a class="arrow next" href="#"><i class="fi fi-bs-angle-small-right"></i></a>');
-            paginationElement.append('<a class="arrow nnext" href="#"><i class="fi fi-bs-angle-double-small-right"></i></a>');
-        }
-
         $(document).ready(function() {
+            var currentPage = 1;  // 현재 페이지를 추적
+            var totalPages = 1;  // 전체 페이지 수
+        
+            function updateBoard(pageNumber) {
+                const search_date_start = $('#search_date_start').val();
+                const search_date_end = $('#search_date_end').val();
+                const search_name = $('#search_name').val();
+                const search_major = $('#major').val();
+        
+                $.ajax({
+                    url: '{% url "get_allpatient_data" %}',
+                    type: 'GET',
+                    data: {
+                        'page': pageNumber,
+                        'search_date_start': search_date_start,
+                        'search_date_end': search_date_end,
+                        'search_name': search_name,
+                        'search_major': search_major
+                    },
+                    success: function(data) {
+                        currentPage = pageNumber;  // 현재 페이지 업데이트
+                        totalPages = data.total_pages;  // 전체 페이지 수 업데이트
+                        updatePage(data.patients); // 데이터 업데이트
+                        updatePageButtons();  // 페이지 버튼 업데이트
+                    }
+                });
+            }
+        
+            function updatePage(patients) {
+                $('#patient-data').empty(); // 기존의 게시판 내용 비우기
+        
+                patients.forEach(function(patient, index) {
+                    var newRow = '<tr><td>' + ((currentPage - 1) * 5 + index + 1) + '</td>' +
+                                 '<th class="title-align"><a href="/catalog/mir_view?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
+                                 '<td>' + patient.birthdate + '</td>' +
+                                 '<td>' + (patient.mir_data ? patient.mir_data.date : '') + '</td></tr>';
+                    $('#patient-data').append(newRow);
+                });
+        
+                var emptyRows = 5 - patients.length;
+                for (var i = 0; i < emptyRows; i++) {
+                    var emptyRow = '<tr><td>&nbsp;</td>' +
+                                '<td>&nbsp;</td>' +
+                                '<td>&nbsp;</td>' +
+                                '<td>&nbsp;</td></tr>';
+                    $('#patient-data').append(emptyRow);
+                }
+            }
+        
+            function updatePageButtons() {
+                var paginationElement = $('#pagination');
+                paginationElement.empty(); // 기존의 페이징 버튼들을 모두 비웁니다.
+        
+                paginationElement.append('<a class="arrow pprev" href="#"><i class="fi fi-bs-angle-double-small-left"></i></a>');
+                paginationElement.append('<a class="arrow prev" href="#"><i class="fi fi-bs-angle-small-left"></i></a>');
+        
+                for (var i = 1; i <= totalPages; i++) {
+                    var pageLink = $('<a href="#" class="page-link">' + i + '</a>');
+                    pageLink.data('page', i);
+                    if (i == currentPage) {
+                        pageLink.addClass('active'); // 현재 페이지에 active 클래스 추가
+                    }
+                    pageLink.attr('href', '#'); // 페이지 번호에 해당하는 URL을 설정합니다.
+                    paginationElement.append(pageLink);
+                }
+        
+                paginationElement.append('<a class="arrow next" href="#"><i class="fi fi-bs-angle-small-right"></i></a>');
+                paginationElement.append('<a class="arrow nnext" href="#"><i class="fi fi-bs-angle-double-small-right"></i></a>');
+            }
+        
             updateBoard(1); // 첫 번째 페이지 데이터 가져오기
-
+        
             $('#pagination').on('click', '.page-link', function(e) {
                 e.preventDefault();
                 var pageNumber = $(this).data('page');
                 updateBoard(pageNumber);
             });
-
+        
             $('#pagination').on('click', '.pprev', function(e) {
                 e.preventDefault();
                 updateBoard(1);
             });
-
+        
             $('#pagination').on('click', '.prev', function(e) {
                 e.preventDefault();
                 if (currentPage > 1) {
                     updateBoard(currentPage - 1);
                 }
             });
-
+        
             $('#pagination').on('click', '.next', function(e) {
                 e.preventDefault();
                 if (currentPage < totalPages) {
                     updateBoard(currentPage + 1);
                 }
             });
-
+        
             $('#pagination').on('click', '.nnext', function(e) {
                 e.preventDefault();
                 updateBoard(totalPages);
             });
-
+        
             $('#search-form').on('submit', function(e) {
                 e.preventDefault();
                 updateBoard(1);
             });
         });
+        
 
         // 로그아웃 버튼 클릭 시 실행
         $('#logout-btn').click(function() {
