@@ -224,7 +224,14 @@ def get_patient_data(request):
         'patients': patient_data,
         'total_pages': paginator.num_pages
     }
-    return JsonResponse(data, safe=False)\
+    return JsonResponse(data, safe=False)
+
+
+    data = {
+        'patients': patient_data,
+        'total_pages': paginator.num_pages
+    }
+    return JsonResponse(data, safe=False)
 
 def get_allpatient_data(request):
     search_date_start = request.GET.get('search_date_start')
