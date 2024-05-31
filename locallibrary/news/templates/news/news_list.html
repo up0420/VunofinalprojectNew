@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News</title>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-straight/css/uicons-bold-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-straight/css/uicons-solid-straight.css'>
     {% load static %}
     <link rel="stylesheet" href="{% static 'news_list.css' %}">
 </head>
@@ -14,13 +16,16 @@
             {% if request.session.doc_id %}
                 <li><a class="upper" href="{% url 'board' %}">Home</a></li>
                 <li><a class="upper" href="{% url 'board_all' %}">All</a></li>
-                <li><a class="upper" id="logout-btn" href="{% url 'logout_view' %}"><i class="fi fi-ss-exit"></i></a></li>
+                
             {% else %}
                 <li><a class="upper" href="{% url 'main' %}">Home</a></li>
             {% endif %}
             <li><a class="upper" href="">Contact</a></li>
             <li><a class="upper" href="{% url 'news_list' %}">NEWS</a></li>
             <li><a class="upper" href="">Q&A</a></li>
+            {% if request.session.doc_id %}
+                <li><a class="upper" id="logout-btn" href="{% url 'logout_view' %}"><i class="fi fi-ss-exit"></i></a></li>
+            {% endif %}
         </ul>
     </header>
 

@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
+from tqdm import tqdm
 
 # 데이터셋 경로 설정
 image_dir = 'c:/nih/images'
@@ -122,7 +123,8 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             running_loss = 0.0
             running_corrects = 0
 
-            for inputs, labels in dataloaders[phase]:
+            # tqdm을 사용하여 진행률 표시
+            for inputs, labels in tqdm(dataloaders[phase], desc=f'{phase} {epoch+1}/{num_epochs}', unit='batch'):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
