@@ -386,8 +386,16 @@ from django.contrib.auth import logout
 
 @csrf_exempt
 def logout_view(request):
-    logout(request)
-    return redirect('/')
+
+    if request.method in ['POST', 'GET']:
+        auth_logout(request)
+        request.session.flush()
+        response = redirect('main')
+        response.delete_cookie('sessionid')
+        return response
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 
 #mir에 저장하기
