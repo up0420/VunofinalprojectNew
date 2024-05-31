@@ -387,10 +387,10 @@ from django.contrib.auth import logout as auth_logout
 
 @csrf_exempt
 def logout_view(request):
-    if request.method == 'POST':
+    if request.method in ['POST', 'GET']:
         auth_logout(request)
         request.session.flush()
-        response = JsonResponse({'message': 'Logged out successfully'})
+        response = redirect('main')
         response.delete_cookie('sessionid')
         return response
     else:
