@@ -150,6 +150,8 @@ def boardAll(request):
     return render(request, 'board_all.html')
 def contact(request):
     return render(request, 'contact.html')
+def qna(request):
+    return render(request, 'qna.html')
 
 # 비동기 게시판 구현
 """ from django.http import JsonResponse

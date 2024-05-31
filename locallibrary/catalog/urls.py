@@ -23,6 +23,7 @@ urlpatterns = [
     path('get_mir_data/', views.get_mir_data, name='get_mir_data'),
     path('get_ximage_id/', views.get_ximage_id, name='get_ximage_id'),
     path('contact', views.contact, name = 'contact'),
+    path('qna', views.qna, name = 'qna'),
 
 ]
 
