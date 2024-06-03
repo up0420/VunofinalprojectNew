@@ -91,8 +91,8 @@ DATABASES = {
         'NAME': 'dongdong21',   # MySQL 데이터베이스 이름
         'USER': 'dongdong21',       # MySQL 사용자 이름
         'PASSWORD': 'dong123',   # MySQL 비밀번호
-        'HOST': 'project-db-campus.smhrd.com',    # MySQL 호스트
-        'PORT': '3312',         # MySQL 포트
+        'HOST': 'project-db-cgi.smhrd.com',    # MySQL 호스트
+        'PORT': '3307',         # MySQL 포트
     }
 }
 # DATABASES = {
