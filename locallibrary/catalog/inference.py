@@ -6,6 +6,7 @@ import numpy as np
 import onnx
 import onnxruntime
 import torch.nn as nn
+import torch.nn.functional as F
 import torch
 from univdt.utils.image import load_image
 
@@ -53,6 +54,7 @@ class GradCAM:
     def __init__(self, model: nn.Module, target_layer: nn.Module):
         self.model = model
         self.target_layer = target_layer
+
         self.gradients = None
         self.activations = None
         self.hook_layers()
@@ -81,7 +83,8 @@ class ChestMateRunner:
                  path_weight_cmptx: str):
         self.path_weight_cmptx = path_weight_cmptx  # cardiomegaly and pneumothorax model path
 
-        self.model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL_CM_PTX, path_weight_cmptx)
+        model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL_CM_PTX, path_weight_cmptx)
+        self.cm_ptx = GradCAM(model_cmptx, model_cmptx.header.conv)
 
     @staticmethod
     def unwrap_key(dummy: dict[str, Any], src_key: str, dst_key: str) -> dict[str, Any]:
@@ -106,12 +109,19 @@ class ChestMateRunner:
         model = model.eval()
         return model
 
-    @torch.no_grad()
-    def run(self, path_input: str) -> dict:
-        image = load_image(path_input, out_channels=1)
+    @staticmethod
+    def preprocess(path_image: str) -> torch.Tensor:
+        image = load_image(path_image, out_channels=1)
         image = image.astype(np.float32) / 255.0
-        image = torch.from_numpy(image).unsqueeze(0).unsqueeze(0)  # 1 1 H W
+        image = torch.from_numpy(image)
+        image = torch.permute(image, (2, 0, 1)).unsqueeze(0)
+        return image
+
+    @torch.no_grad()
+    def run(self, path_image: str) -> dict:
+        image = ChestMateRunner.preprocess(path_image)
 
     @torch.no_grad()
     def run_cm_ptx(self, image: torch.Tensor):
+        image = F.upsample_bilinear(image, size=(512, 512))
         logits, preds = self.model_cmptx(image)
