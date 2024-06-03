@@ -1,3 +1,24 @@
+@font-face {
+    font-family: 'Freesentation-9Black';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -9,9 +30,16 @@ body {
 }
 
 video {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     object-fit: cover;
+    z-index: -1;
+    /* width: 100%;
+    height: 100vh;
+    object-fit: cover; */
     /*  opacity: 0.9; */
 
 }
@@ -21,7 +49,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1;
+    /* z-index: 1; */
     display: flex;
     justify-content: space-between;
 }
@@ -31,6 +59,8 @@ header {
     padding: 10px;
     left: 0;
     color: white;
+    margin-left: 10px;
+    font-size: 25px;
 }
 
 .header_menu {
@@ -72,16 +102,16 @@ li:hover {
 }
 
 .example {
-
     position: absolute;
     top: 50%;
-    left: 20%;
+    left: 27%;
     transform: translate(-50%, -50%);
-    color: white;
+    color: whitesmoke;
     text-align: left;
-    font-size: 50px;
-    z-index: 2;
-
+    font-size: 48px;
+    /* z-index: 2; */
+    font-weight: bolder;
+    font-style: italic;
 }
 
 .example p {

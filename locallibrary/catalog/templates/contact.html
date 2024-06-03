@@ -7,43 +7,199 @@
     <title>Document</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+    <link rel="stylesheet" href="{% static 'css/qna.css' %}">
 </head>
 
 <body>
     <div class="boxes">
-        <section>
+        <section class="video-section">
             <video src="{% static 'main2.mp4' %}" muted autoplay loop></video>
             <header>
                 <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
                 <nav>
                     <ul class="header_menu">
-                        <li><a class="upper" href="{% url 'contact' %}">Contact</a></li>
+                        <li><a class="upper" href="{% url 'main' %}">Home</a></li>
+                        <li><a class="upper" href="{% url 'contact' %}">ABOUT US</a></li>
                         <li><a class="upper" href="{% url 'news_list' %}">News</a></li>
-                        <li><a class="upper" href="">Q&A</a></li>
+                        <li><a class="upper" href="#" id="qna-link">Q&A</a></li>
                     </ul>
                 </nav>
             </header>
-            <div class="example">
-                <p>FUTURE MEDICAL AI</p>
-                <p>WITH CHEST MATE</p>
+            <div class="box">
+                <div class="textBox1">
+                    <div class="test">의료 AI로 건강한 미래를 열다,</div>
+                </div>
+                <div class="textBox2">
+                    <div class="sentence">WITH CHEST MATE</div>
+                </div>
             </div>
         </section>
         <section>
-            <video src="{% static 'main.mp4' %}" muted autoplay loop></video>
-
-            <div class="box">
-                <div class="textBox1">
-                    <div class="test">이 문장은</div>
+            <div class="box2">
+                <div class="product">
+                    <div class="product1">&nbsp;&nbsp;&nbsp;product</div>
+                    <div class="product2">
+                        <div class="inBox">CHEST MATE은 의료진들의 일상적인 워크플로우에서 새로운 경험을 제공하고 있습니다</div>
+                    </div>
+                    <div class="product3">
+                        <div class="menuBox">
+                            <div class="menuButton">
+                                <button class="choose"><img
+                                        src="https://cdn.icon-icons.com/icons2/916/PNG/512/Menu_icon_icon-icons.com_71858.png"
+                                        width="30px" height="30px"></button>
+                                &nbsp;&nbsp;CHEST MATE - Patient List
+                            </div>
+                            <br>
+                            <div class="menuButton">
+                                <button class="choose"><img src="https://cdn-icons-png.freepik.com/512/6204/6204586.png"
+                                        width="30px" height="30px"></button>
+                                &nbsp;&nbsp;CHEST MATE - Contact
+                            </div>
+                            <br>
+                            <div class="menuButton">
+                                <button class="choose"><img
+                                        src="https://w7.pngwing.com/pngs/592/414/png-transparent-computer-icons-news-news-icon-angle-text-rectangle-thumbnail.png"
+                                        width="30px" height="30px"></button>
+                                &nbsp;&nbsp;CHEST MATE - NEWS
+                            </div>
+                            <br>
+                            <div class="menuButton">
+                                <button class="choose"><img
+                                        src="https://cdn-icons-png.flaticon.com/512/6369/6369389.png" width="30px"
+                                        height="30px"></button>
+                                &nbsp;&nbsp;CHEST MATE - Q&A
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="textBox2">
-                    <div class="sentence">테스트용 문장입니다</div>
+                <div class="list">
+                    <div class="listBox">
+                        <div class="menu">
+                            <div class="up">
+                                <img
+                                    src="../static/img/pat.jpg">
+                            </div>
+                            <div class="down">
+                                <div class="down1">CHEST MATE - Patient List</div>
+                                <div class="down2">
+                                    흉부 X-ray 촬영 기록을 열람할 수 있는 데이터베이스 솔루션
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                        <div class="menu">
+                            <div class="up">
+                                <img src="https://i.makeagif.com/media/3-26-2017/FG8YwK.gif">
+                            </div>
+                            <div class="down">
+                                <div class="down1">CHEST MATE - Contact</div>
+                                <div class="down2">
+                                    흉부 X-ray 촬영 시 주로 관찰되는 주요 비정상적 소견 여부와 비정상일 경우 의심되는 비정상 위치를 정확히 제시하는 인공지능 솔루션
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                        <div class="menu">
+                            <div class="up">
+                                <img src="https://i.makeagif.com/media/11-24-2021/CbKIRl.gif">
+                            </div>
+                            <div class="down">
+                                <div class="down1">CHEST MATE - NEWS</div>
+                                <div class="down2">
+                                    이 문장은 테스트용 문장입니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                        <div class="menu">
+                            <div class="up">
+                                <img src="https://i.makeagif.com/media/9-10-2016/PPCKYi.gif">
+                            </div>
+                            <div class="down">
+                                <div class="down1">CHEST MATE - Q&A</div>
+                                <div class="down2">
+                                    흉부 X-ray 진단 관련 질의 응답을 제시하는 커뮤니티 솔루션
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <div class="popup-box">
+            <div class="popup" id="qna-form-container">
+                <button type="button" id="close-button">닫기</button>
+                <form id="qna-form">
+                    <h2>문의사항 남기기</h2>
+                    <p>CHESTMATE에 방문해 주셔서 감사합니다.</p>
+                    <p>서비스에 관한 문의를 남겨주세요.</p>
+                    <input type="text" id="qna-name" name="name" placeholder="이름">
+                    <input type="text" id="qna-address" name="address" placeholder="지역(ex.서울시 서초구)">
+                    <input type="text" id="qna-hospital" name="hospital" placeholder="병원명/소속">
+                    <input type="email" id="qna-email" name="email" placeholder="이메일">
+                    <input type="text" id="qna-phone" name="phone" placeholder="전화번호">
+                    <textarea id="qna-textarea" name="question" rows="5" cols="33" placeholder="문의사항"></textarea>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // 자동 스크롤 속도 조절
+        const scrollContainer = document.querySelector('.boxes');
 
+        scrollContainer.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            scrollContainer.scrollBy({
+                top: event.deltaY * 0.1, // 스크롤 속도를 줄이기 위해 0.1 배로 설정
+                behavior: 'smooth'
+            });
+        });
+
+        // 터치 스크롤 속도 조절 
+        let startY;
+        scrollContainer.addEventListener('touchstart', (event) => {
+            startY = event.touches[0].pageY;
+        });
+
+        scrollContainer.addEventListener('touchmove', (event) => {
+            const moveY = event.touches[0].pageY;
+            const deltaY = startY - moveY;
+            scrollContainer.scrollBy({
+                top: deltaY * 0.1, // 스크롤 속도를 줄이기 위해 0.1 배로 설정
+                behavior: 'smooth'
+            });
+            startY = moveY;
+            event.preventDefault();
+        });
+
+        $(document).ready(function() {
+            // 팝업 버튼 클릭시 popup-active-1 실행
+            $('#qna-link').click(function(event) {
+                event.preventDefault();
+                $('html').addClass('popup-active-1');
+                $('qna-form-container').classList.toggle('hidden');
+            });
+        
+            // 배경 클릭시 popup-active-1 제거
+            $('.popup-box').click(function(event) {
+                // Ensure that only the background click closes the popup, not clicks inside the popup
+                if ($(event.target).closest('.popup').length === 0) {
+                    $('html').removeClass('popup-active-1');
+                    $('qna-form-container').classList.toggle('hidden');
+                }
+            });
+        
+            // 닫기 버튼 클릭시 popup-active-1 제거
+            $('#close-button').click(function() {
+                $('html').removeClass('popup-active-1');
+                $('qna-form-container').classList.add('hidden');
+            });
+        });
     </script>
 </body>
 
