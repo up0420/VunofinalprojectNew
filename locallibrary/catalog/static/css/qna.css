@@ -1,0 +1,99 @@
+
+
+.popup-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+.popup {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#close-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    float: right;
+    margin-top: -10px;
+    margin-right: -10px;
+}
+
+#qna-form h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#qna-form p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Container for the text section to add more padding and spacing */
+.text-section {
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+/* Input and textarea styles */
+#qna-form input[type="text"],
+#qna-form input[type="email"],
+#qna-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #333;
+}
+
+#qna-form textarea {
+    resize: none;
+}
+
+/* Submit button styles */
+#qna-form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #007BFF;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#qna-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Ensure the popup is visible when the class is added to the HTML */
+html.popup-active-1 .popup-box {
+    visibility: visible;
+    opacity: 1;
+}
