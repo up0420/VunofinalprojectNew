@@ -55,8 +55,8 @@ class GradCAM:
         self.model = model
         self.target_layer = target_layer
 
-        self.gradients = None
-        self.activations = None
+        self.gradients: torch.Tensor = None
+        self.activations: torch.Tensor = None
         self.hook_layers()
 
     def hook_layers(self):
@@ -69,9 +69,27 @@ class GradCAM:
         self.target_layer.register_forward_hook(forward_hook)
         self.target_layer.register_full_backward_hook(full_backward_hook)
 
-    def forward(self, input_image: torch.Tensor):
+    def forward(self, x: torch.Tensor):
         self.model.zero_grad()
-        return self.model(input_image)
+        return self.model(x)
+
+    def __call__(self, *args: Any, **kargs: Any) -> Any:
+        return self.forward(*args, **kargs)
+
+    def generate_cam(self, target_class: int):
+        gradients = self.gradients.cpu().data.numpy()
+        activations = self.activations.cpu().data.numpy()
+        assert gradients.shape == activations.shape
+        assert gradients.shape[0] == 1
+
+        gradients = gradients[0]  # C H W
+        activations = activations[0]  # C H W
+
+        weights = np.mean(gradients, axis=(1, 2))
+        cam = np.sum(weights[:, np.newaxis, np.newaxis] * activations, axis=0)
+        # same code
+        # for i, w in enumerate(weights):
+        #     cam += w * activations[i]
 
 
 class ChestMateRunner:
@@ -80,11 +98,17 @@ class ChestMateRunner:
     """
 
     def __init__(self,
-                 path_weight_cmptx: str):
+                 path_weight_cmptx: str,
+                 threshold_cm: float = 0.5,
+                 threshold_ptx: float = 0.5):
         self.path_weight_cmptx = path_weight_cmptx  # cardiomegaly and pneumothorax model path
 
         model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL_CM_PTX, path_weight_cmptx)
         self.cm_ptx = GradCAM(model_cmptx, model_cmptx.header.conv)
+
+        # thresholds
+        self.threshold_cm = threshold_cm  # threshold for cardiomegaly
+        self.threshold_ptx = threshold_ptx  # threshold for pneumothorax
 
     @staticmethod
     def unwrap_key(dummy: dict[str, Any], src_key: str, dst_key: str) -> dict[str, Any]:
@@ -117,11 +141,23 @@ class ChestMateRunner:
         image = torch.permute(image, (2, 0, 1)).unsqueeze(0)
         return image
 
-    @torch.no_grad()
     def run(self, path_image: str) -> dict:
         image = ChestMateRunner.preprocess(path_image)
+        cm_ptx = self._run_cm_ptx(image)
+        return cm_ptx
 
-    @torch.no_grad()
-    def run_cm_ptx(self, image: torch.Tensor):
-        image = F.upsample_bilinear(image, size=(512, 512))
-        logits, preds = self.model_cmptx(image)
+    def _run_cm_ptx(self, image: torch.Tensor) -> dict[str, Any]:
+        image = F.interpolate(image, size=(384, 384), mode='bilinear', align_corners=True)
+        _, preds = self.cm_ptx(image)
+        preds = preds.squeeze()
+
+        scores = preds.detach().squeeze().cpu().numpy()
+        score_cm, score_ptx = scores
+        outputs = {'cardiomegaly': {'score': 0.0, 'heatmap': None},
+                   'pneumothorax': {'score': 0.0, 'heatmap': None}}
+        outputs['cardiomegaly']['score'] = score_cm
+        outputs['pneumothorax']['score'] = score_ptx
+
+        # if score_cm > self.threshold_cm:
+
+        return outputs, preds
