@@ -5,6 +5,7 @@ import onnx
 import onnxruntime
 from univdt.utils.image import load_image
 
+
 def run_inference(path_weight: str, path_input: str) -> float:
     try:
         # load onnx file
