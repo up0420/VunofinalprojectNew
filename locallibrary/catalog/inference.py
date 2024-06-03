@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import onnx
 import onnxruntime
+import torch.nn as nn
 import torch
 from univdt.utils.image import load_image
 
@@ -48,6 +49,29 @@ _CONFIG_MODEL_CM_PTX = {"encoder": {"name": "convnext_base.fb_in22k_ft_in1k_384"
                                    "pool": "avg", "interpolate": False, "return_logits": True}}
 
 
+class GradCAM:
+    def __init__(self, model: nn.Module, target_layer: nn.Module):
+        self.model = model
+        self.target_layer = target_layer
+        self.gradients = None
+        self.activations = None
+        self.hook_layers()
+
+    def hook_layers(self):
+        def forward_hook(module, input, output):
+            self.activations = output
+
+        def full_backward_hook(module, grad_input, grad_output):
+            self.gradients = grad_output[0]
+
+        self.target_layer.register_forward_hook(forward_hook)
+        self.target_layer.register_full_backward_hook(full_backward_hook)
+
+    def forward(self, input_image: torch.Tensor):
+        self.model.zero_grad()
+        return self.model(input_image)
+
+
 class ChestMateRunner:
     """
     Run inference for the ChestMate model
@@ -86,7 +110,7 @@ class ChestMateRunner:
     def run(self, path_input: str) -> dict:
         image = load_image(path_input, out_channels=1)
         image = image.astype(np.float32) / 255.0
-        image = torch.from_numpy(image).unsqueeze(0)
+        image = torch.from_numpy(image).unsqueeze(0).unsqueeze(0)  # 1 1 H W
 
     @torch.no_grad()
     def run_cm_ptx(self, image: torch.Tensor):
