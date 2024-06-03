@@ -8,7 +8,7 @@ import onnxruntime
 import torch
 from univdt.utils.image import load_image
 
-from .models import Model
+from .pymodels import Model
 
 
 def run_inference(path_weight: str, path_input: str) -> float:
