@@ -8,3 +8,7 @@ old.*
 manage.py
 settings.py
 
+
+# weights file
+*.pth
+*.pt

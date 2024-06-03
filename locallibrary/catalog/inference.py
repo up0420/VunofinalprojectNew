@@ -84,4 +84,10 @@ class ChestMateRunner:
 
     @torch.no_grad()
     def run(self, path_input: str) -> dict:
-        pass
+        image = load_image(path_input, out_channels=1)
+        image = image.astype(np.float32) / 255.0
+        image = torch.from_numpy(image).unsqueeze(0)
+
+    @torch.no_grad()
+    def run_cm_ptx(self, image: torch.Tensor):
+        logits, preds = self.model_cmptx(image)
