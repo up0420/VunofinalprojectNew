@@ -9,7 +9,6 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/board.css' %}">
     <link rel="stylesheet" href="{% static 'css/paging.css' %}">
-    <link rel="stylesheet" href="{% static 'css/qna.css' %}">
 </head>
 <body>
     <video src="{% static 'main.mp4' %}" muted autoplay loop></video>
@@ -92,25 +91,6 @@
             </div>
         </div>
     </section>
-
-    
-    <div class="popup-box">
-        <div class="popup" id="qna-form-container">
-            <button type="button" id="close-button">닫기</button>
-            <form id="qna-form">
-                <h2>문의사항 남기기</h2>
-                <p>CHESTMATE에 방문해 주셔서 감사합니다.</p>
-                <p>서비스에 관한 문의를 남겨주세요.</p>
-                <input type="text" id="qna-name" name="name" placeholder="이름">
-                <input type="text" id="qna-address" name="address" placeholder="지역(ex.서울시 서초구)">
-                <input type="text" id="qna-hospital" name="hospital" placeholder="병원명/소속">
-                <input type="email" id="qna-email" name="email" placeholder="이메일">
-                <input type="text" id="qna-phone" name="phone" placeholder="전화번호">
-                <textarea id="qna-textarea" name="question" rows="5" cols="33" placeholder="문의사항"></textarea>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -260,30 +240,6 @@
             }
             return cookieValue;
         }
-
-        $(document).ready(function() {
-            // 팝업 버튼 클릭시 popup-active-1 실행
-            $('#qna-link').click(function(event) {
-                event.preventDefault();
-                $('html').addClass('popup-active-1');
-                $('qna-form-container').classList.toggle('hidden');
-            });
-        
-            // 배경 클릭시 popup-active-1 제거
-            $('.popup-box').click(function(event) {
-                // Ensure that only the background click closes the popup, not clicks inside the popup
-                if ($(event.target).closest('.popup').length === 0) {
-                    $('html').removeClass('popup-active-1');
-                    $('qna-form-container').classList.toggle('hidden');
-                }
-            });
-        
-            // 닫기 버튼 클릭시 popup-active-1 제거
-            $('#close-button').click(function() {
-                $('html').removeClass('popup-active-1');
-                $('qna-form-container').classList.add('hidden');
-            });
-        });
     </script>
 </body>
 </html>
