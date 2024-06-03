@@ -1,9 +1,16 @@
 # inference.py
+from typing import Any
+
 import cv2
 import numpy as np
 import onnx
 import onnxruntime
+import torch.nn as nn
+import torch
 from univdt.utils.image import load_image
+
+from .pymodels import Model
+
 
 def run_inference(path_weight: str, path_input: str) -> float:
     try:
@@ -32,3 +39,79 @@ def run_inference(path_weight: str, path_input: str) -> float:
     except Exception as e:
         print(f"Error in run_inference function: {e}")
         return None
+
+
+_CONFIG_MODEL_CM_PTX = {"encoder": {"name": "convnext_base.fb_in22k_ft_in1k_384",
+                                    "pretrained": False, "num_classes": 0,
+                                    "features_only": True, "in_chans": 1, "out_indices": [2, 3]},
+                        "decoder": {"name": "upsample_concat"},
+                        "header": {"name": "singleconv", "num_classes": 2, "dropout": 0.2,
+                                   "pool": "avg", "interpolate": False, "return_logits": True}}
+
+
+class GradCAM:
+    def __init__(self, model: nn.Module, target_layer: nn.Module):
+        self.model = model
+        self.target_layer = target_layer
+        self.gradients = None
+        self.activations = None
+        self.hook_layers()
+
+    def hook_layers(self):
+        def forward_hook(module, input, output):
+            self.activations = output
+
+        def full_backward_hook(module, grad_input, grad_output):
+            self.gradients = grad_output[0]
+
+        self.target_layer.register_forward_hook(forward_hook)
+        self.target_layer.register_full_backward_hook(full_backward_hook)
+
+    def forward(self, input_image: torch.Tensor):
+        self.model.zero_grad()
+        return self.model(input_image)
+
+
+class ChestMateRunner:
+    """
+    Run inference for the ChestMate model
+    """
+
+    def __init__(self,
+                 path_weight_cmptx: str):
+        self.path_weight_cmptx = path_weight_cmptx  # cardiomegaly and pneumothorax model path
+
+        self.model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL_CM_PTX, path_weight_cmptx)
+
+    @staticmethod
+    def unwrap_key(dummy: dict[str, Any], src_key: str, dst_key: str) -> dict[str, Any]:
+        updated_dict = {}
+        for key, value in dummy.items():
+            updated_key = key.replace(src_key, dst_key)
+            updated_dict[updated_key] = value
+        return updated_dict
+
+    @staticmethod
+    def load_weight(path_weight: str) -> dict[str, Any]:
+        weight = torch.load(path_weight, map_location='cpu')
+        if 'state_dict' in weight:
+            weight = weight['state_dict']
+        weight = ChestMateRunner.unwrap_key(weight, 'model.', '')
+        return weight
+
+    @staticmethod
+    def load_model(config_model: dict[str, Any], path_weight: str) -> Model:
+        model = Model(**config_model)
+        model.load_state_dict(ChestMateRunner.load_weight(path_weight))
+        model = model.eval()
+        return model
+
+    @torch.no_grad()
+    def run(self, path_input: str) -> dict:
+        image = load_image(path_input, out_channels=1)
+        image = image.astype(np.float32) / 255.0
+        image = torch.from_numpy(image).unsqueeze(0).unsqueeze(0)  # 1 1 H W
+
+    @torch.no_grad()
+    def run_cm_ptx(self, image: torch.Tensor):
+        logits, preds = self.model_cmptx(image)
