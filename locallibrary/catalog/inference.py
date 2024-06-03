@@ -35,8 +35,8 @@ def run_inference(path_weight: str, path_input: str) -> float:
         # inference
         ort_inputs = {input_name: image}
         ort_outs = float(ort_session.run([output_name], ort_inputs)[0][0])
-
         return ort_outs
+
     except Exception as e:
         print(f"Error in run_inference function: {e}")
         return None
@@ -76,7 +76,7 @@ class GradCAM:
     def __call__(self, *args: Any, **kargs: Any) -> Any:
         return self.forward(*args, **kargs)
 
-    def generate_cam(self, target_class: int):
+    def generate_cam(self, target_class: int) -> np.ndarray:
         gradients = self.gradients.cpu().data.numpy()
         activations = self.activations.cpu().data.numpy()
         assert gradients.shape == activations.shape
@@ -86,10 +86,37 @@ class GradCAM:
         activations = activations[0]  # C H W
 
         weights = np.mean(gradients, axis=(1, 2))
-        cam = np.sum(weights[:, np.newaxis, np.newaxis] * activations, axis=0)
-        # same code
-        # for i, w in enumerate(weights):
-        #     cam += w * activations[i]
+        cam = np.sum(weights[:, np.newaxis, np.newaxis] * activations, axis=0)  # H W
+        cam = np.maximum(cam, 0)
+        cam = cam - np.min(cam)
+        cam = cam / np.max(cam)
+        return cam
+
+
+def ovelay_cam_on_image(image: np.ndarray | torch.Tensor, cam: np.ndarray | torch.Tensor, alpha: float = 0.7) -> np.ndarray:
+    if isinstance(image, torch.Tensor):
+        image = image.detach().cpu().numpy()
+    if isinstance(cam, torch.Tensor):
+        cam = cam.detach().cpu().numpy()
+
+    if len(image.shape) == 4:
+        image = image[0]
+
+    assert len(image.shape) == 3
+    image = np.transpose(image, (1, 2, 0))  # H W C
+    if image.shape[-1] == 1:
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    image = cv2.resize(image, (512, 512))
+    image = (image * 255).astype(np.uint8)
+
+    cam = cv2.resize(cam, (512, 512))
+    heatmap = cv2.applyColorMap(np.uint8(255*cam), cv2.COLORMAP_JET)
+    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+    # heatmap = heatmap.astype(np.uint8)
+
+    print(image.shape, heatmap.shape)
+    overlay = cv2.addWeighted(image, alpha, heatmap, 1-alpha, 0)
+    return overlay
 
 
 class ChestMateRunner:
@@ -141,10 +168,15 @@ class ChestMateRunner:
         image = torch.permute(image, (2, 0, 1)).unsqueeze(0)
         return image
 
-    def run(self, path_image: str) -> dict:
+    def run(self, path_image: str) -> dict[str, Any]:
         image = ChestMateRunner.preprocess(path_image)
-        cm_ptx = self._run_cm_ptx(image)
-        return cm_ptx
+
+        outputs = {}
+        # run cardiomegaly and pneumothorax model
+        cm_ptx: dict[str, Any] = self._run_cm_ptx(image)
+        outputs.update(cm_ptx)
+
+        return outputs
 
     def _run_cm_ptx(self, image: torch.Tensor) -> dict[str, Any]:
         image = F.interpolate(image, size=(384, 384), mode='bilinear', align_corners=True)
@@ -158,6 +190,16 @@ class ChestMateRunner:
         outputs['cardiomegaly']['score'] = score_cm
         outputs['pneumothorax']['score'] = score_ptx
 
-        # if score_cm > self.threshold_cm:
+        if score_cm > self.threshold_cm:
+            preds[0].backward(retain_graph=True)
+            cam: np.ndarray = self.cm_ptx.generate_cam(0)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['cardiomegaly']['heatmap'] = overlay
 
-        return outputs, preds
+        if score_ptx > self.threshold_ptx:
+            preds[1].backward(retain_graph=True)
+            cam: np.ndarray = self.cm_ptx.generate_cam(1)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['cardiomegaly']['heatmap'] = overlay
+
+        return outputs
