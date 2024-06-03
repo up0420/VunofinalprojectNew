@@ -13,7 +13,7 @@ video {
   height: 100%;
   object-fit: cover;
   z-index: -1; /* Ensures the video is behind other content */
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 /***** header CSS *****/
