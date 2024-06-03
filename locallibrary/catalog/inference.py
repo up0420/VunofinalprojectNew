@@ -1,9 +1,15 @@
 # inference.py
+from typing import Any
+
 import cv2
 import numpy as np
 import onnx
 import onnxruntime
+import torch
 from univdt.utils.image import load_image
+
+from .models import Model
+
 
 def run_inference(path_weight: str, path_input: str) -> float:
     try:
@@ -32,3 +38,50 @@ def run_inference(path_weight: str, path_input: str) -> float:
     except Exception as e:
         print(f"Error in run_inference function: {e}")
         return None
+
+
+_CONFIG_MODEL_CM_PTX = {"encoder": {"name": "convnext_base.fb_in22k_ft_in1k_384",
+                                    "pretrained": False, "num_classes": 0,
+                                    "features_only": True, "in_chans": 1, "out_indices": [2, 3]},
+                        "decoder": {"name": "upsample_concat"},
+                        "header": {"name": "singleconv", "num_classes": 2, "dropout": 0.2,
+                                   "pool": "avg", "interpolate": False, "return_logits": True}}
+
+
+class ChestMateRunner:
+    """
+    Run inference for the ChestMate model
+    """
+
+    def __init__(self,
+                 path_weight_cmptx: str):
+        self.path_weight_cmptx = path_weight_cmptx  # cardiomegaly and pneumothorax model path
+
+        self.model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL_CM_PTX, path_weight_cmptx)
+
+    @staticmethod
+    def unwrap_key(dummy: dict[str, Any], src_key: str, dst_key: str) -> dict[str, Any]:
+        updated_dict = {}
+        for key, value in dummy.items():
+            updated_key = key.replace(src_key, dst_key)
+            updated_dict[updated_key] = value
+        return updated_dict
+
+    @staticmethod
+    def load_weight(path_weight: str) -> dict[str, Any]:
+        weight = torch.load(path_weight, map_location='cpu')
+        if 'state_dict' in weight:
+            weight = weight['state_dict']
+        weight = ChestMateRunner.unwrap_key(weight, 'model.', '')
+        return weight
+
+    @staticmethod
+    def load_model(config_model: dict[str, Any], path_weight: str) -> Model:
+        model = Model(**config_model)
+        model.load_state_dict(ChestMateRunner.load_weight(path_weight))
+        model = model.eval()
+        return model
+
+    @torch.no_grad()
+    def run(self, path_input: str) -> dict:
+        pass
