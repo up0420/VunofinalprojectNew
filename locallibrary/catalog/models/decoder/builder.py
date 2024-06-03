@@ -1,7 +1,7 @@
 from typing import List
 
-from trainer.models.decoder.identity import IdentityDecoder
-from trainer.models.decoder.upsample_concat import UpsampleConcat
+from .identity import IdentityDecoder
+from .upsample_concat import UpsampleConcat
 
 available_decoders = {'identity': IdentityDecoder,
                       'upsample_concat': UpsampleConcat,
