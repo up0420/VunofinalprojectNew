@@ -65,7 +65,7 @@ class MIR(models.Model):
     DOC_ID = models.ForeignKey(Doctor, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"MIR result for {self.XIMAGE.PATIENT} on {self.MIR_DATE}"
+        return f"MIR result for {self.MIR_DATE}"
 
     
 

@@ -7,6 +7,8 @@ from .models import XImage, Patient
 import os
 from .inference import run_inference  # 여기서 main 함수를 불러옵니다
 from django.conf import settings
+from datetime import datetime
+import logging
 
 
 # def patient_xrays(request, pat_id):
@@ -212,7 +214,7 @@ def get_patient_data(request):
                 mir_data = {
                     'result': mir.MIR_RESULT,
                     'mir': mir.MIR_MIR,
-                    'date': mir.MIR_DATE
+                    'date': mir.MIR_DATE.strftime('%Y-%m-%d')
                 }
 
         patient_data.append({
@@ -229,11 +231,8 @@ def get_patient_data(request):
     return JsonResponse(data, safe=False)
 
 
-    data = {
-        'patients': patient_data,
-        'total_pages': paginator.num_pages
-    }
-    return JsonResponse(data, safe=False)
+ 
+
 
 def get_allpatient_data(request):
     search_date_start = request.GET.get('search_date_start')
@@ -270,27 +269,40 @@ def get_allpatient_data(request):
     paginator = Paginator(patients, 5)  # 페이지당 5개의 항목
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    
 
+    logging.basicConfig(
+    level=logging.DEBUG,  # 로그 레벨 설정 (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s',  # 로그 포맷 설정
+    filename='debug.log',  # 로그 파일명 설정
+)
+    print('check_patient:' , patients)
+    
     patient_data = []
     for patient in page_obj:
-        ximage = XImage.objects.filter(PAT_ID=patient).first()
-        mir_data = None
+        print('page_object', page_obj)
+        print('check_patient after check:' , patient)
+        ximage = XImage.objects.filter(PAT_ID=patient.PAT_ID).first()
+        print('check_ximage:' , ximage)
         if ximage:
-            mir = MIR.objects.filter(XIMAGE_ID=ximage).first()
+            mir = MIR.objects.filter(XIMAGE_ID=ximage).order_by('MIR_DATE').first()
+            print('check_mir:' , mir)
             if mir:
                 mir_data = {
                     'result': mir.MIR_RESULT,
                     'mir': mir.MIR_MIR,
-                    'date': mir.MIR_DATE
+                    'date': mir.MIR_DATE.strftime('%Y-%m-%d')
                 }
-
+            else: mir_data = None
+        else: mir_data = None          
+        #logging.debug("Mir_data: %s", mir)  # 로그 기록
         patient_data.append({
             'id': patient.PAT_ID,
             'name': patient.PAT_NAME,
             'birthdate': patient.PAT_BIRTH,
             'mir_data': mir_data
         })
-
+        
     data = {
         'patients': patient_data,
         'total_pages': paginator.num_pages
