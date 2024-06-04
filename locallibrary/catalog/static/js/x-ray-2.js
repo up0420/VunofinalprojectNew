@@ -1,13 +1,39 @@
 
 // AI Analysis
+// document.getElementById('analysis').addEventListener('click', function () {
+//     var imagePath = document.getElementById('main-image').getAttribute('src');
+//     console.log('imagePath' + imagePath)
+//     fetch(`/catalog/chestmatetest/?image_path=${imagePath}`)
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log('type of data : ' + data)
+//             if (data.result) {
+//                 document.getElementById('ai-opinion').textContent = `AI 소견: ${data.result}`;
+//                 document.getElementById('ai-opinion').classList.remove('hidden');
+//             } else {
+//                 console.error('AI 분석 결과가 없습니다.');
+//             }
+//         })
+//         .catch(error => {
+//             console.error('오류 발생:', error);
+//         });
+// });
+
 document.getElementById('analysis').addEventListener('click', function () {
     var imagePath = document.getElementById('main-image').getAttribute('src');
     console.log('imagePath' + imagePath)
-    fetch(`/catalog/analyze/?image_path=${imagePath}`)
+    fetch(`/catalog/chestmatetest/?image_path=${imagePath}`)
         .then(response => response.json())
         .then(data => {
+            console.log('type of data : ', data)
+
+            // cardiomegaly 및 pneumothorax의 점수에 접근
             if (data.result) {
-                document.getElementById('ai-opinion').textContent = `AI 소견: ${data.result}`;
+                const cardiomegalyScore = data.result.cardiomegaly.score;
+                const pneumothoraxScore = data.result.pneumothorax.score;
+
+                // 결과를 출력
+                document.getElementById('ai-opinion').textContent = `AI 소견 \n Cardio: ${cardiomegalyScore} \n Penumo: ${pneumothoraxScore}`;
                 document.getElementById('ai-opinion').classList.remove('hidden');
             } else {
                 console.error('AI 분석 결과가 없습니다.');
@@ -17,6 +43,7 @@ document.getElementById('analysis').addEventListener('click', function () {
             console.error('오류 발생:', error);
         });
 });
+
 
 
 

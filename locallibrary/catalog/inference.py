@@ -175,7 +175,7 @@ class ChestMateRunner:
         # run cardiomegaly and pneumothorax model
         cm_ptx: dict[str, Any] = self._run_cm_ptx(image)
         outputs.update(cm_ptx)
-
+        
         return outputs
 
     def _run_cm_ptx(self, image: torch.Tensor) -> dict[str, Any]:

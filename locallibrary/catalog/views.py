@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import XImage, Patient
 import os
-from .inference import run_inference  # 여기서 main 함수를 불러옵니다
+from .inference import run_inference, ChestMateRunner  # 여기서 main 함수를 불러옵니다
 from django.conf import settings
 from datetime import datetime
 import logging
@@ -68,6 +68,26 @@ def analyze_image(request):
         return JsonResponse({'result': result})
     else:
         return JsonResponse({'error': 'No image path provided'}, status=400)
+
+def chestmatetest(request):
+    runner = ChestMateRunner(path_weight_cmptx='C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pth') #, threshold_cm=0.5, threshold_ptx=0.5)
+    image_path = request.GET.get('image_path')
+    if image_path:
+        # 이미지의 상대 경로 생성 및 절대 경로로 변환
+        static_image_path = os.path.join(settings.MEDIA_ROOT, 'ximages', os.path.basename(image_path))
+        print('경로' , static_image_path)
+        
+        result = runner.run(path_image= static_image_path)
+        
+        # NumPy 배열을 삭제하고 JSON으로 직렬화할 준비
+        serialized_result = {
+            'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
+            'pneumothorax': {'score': float(result['pneumothorax']['score'])}
+        }
+        print("this is a json test : " , serialized_result)
+        return JsonResponse({'result': serialized_result})
+    else:
+        return JsonResponse({'error': 'No results provided'}, status=400)    
 
 def get_patient_images(request):
     if request.method == 'GET' or request.method == 'POST':
