@@ -13,7 +13,9 @@
 <body>
     <video src="{% static 'main.mp4' %}" muted autoplay loop></video>
     <header>
-        <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
+        <div class="logo">
+            <img src="../static/img/logo.png" id="logo-img">
+        </div>
         <nav>
             <ul class="header_menu">
                 <li><a class="upper" href="{% url 'main' %}">Home</a></li>
