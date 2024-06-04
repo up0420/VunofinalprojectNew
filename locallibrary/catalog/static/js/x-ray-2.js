@@ -29,12 +29,15 @@ document.getElementById('analysis').addEventListener('click', function () {
 
             // cardiomegaly 및 pneumothorax의 점수에 접근
             if (data.result) {
-                const cardiomegalyScore = data.result.cardiomegaly.score;
-                const pneumothoraxScore = data.result.pneumothorax.score;
-
+                const cardiomegalyScore = Math.round(data.result.cardiomegaly.score * 1000) / 1000;
+                const pneumothoraxScore = Math.round(data.result.pneumothorax.score * 1000) / 1000;
+                console.log(cardiomegalyScore)
                 // 결과를 출력
-                document.getElementById('ai-opinion').textContent = `AI 소견 \n Cardio: ${cardiomegalyScore} \n Penumo: ${pneumothoraxScore}`;
+                document.getElementById('ai-opinion').textContent = `제 소견으로는 Cardiomegaly일 확률이 : ${cardiomegalyScore * 1000/10}%이고
+                Pneumothorax일 확률이 : ${pneumothoraxScore*100}% 입니다`;
                 document.getElementById('ai-opinion').classList.remove('hidden');
+
+                updateBar(cardiomegalyScore, pneumothoraxScore);
             } else {
                 console.error('AI 분석 결과가 없습니다.');
             }
@@ -43,6 +46,35 @@ document.getElementById('analysis').addEventListener('click', function () {
             console.error('오류 발생:', error);
         });
 });
+
+// Analysis 버튼 클릭 시 분석 시작 
+function updateBar(cardio, pneumo) {
+    // hidden 해놓은 ai 소견 내역을 visible로 변경하기
+    var hiddenElements = document.querySelectorAll('.hidden');
+
+
+    hiddenElements.forEach(function (element) {
+        element.classList.remove('hidden');
+    });
+
+    // Penumo, Cardio 데이터
+    let data = [
+        { name: 'Pneumo', percentage: (pneumo * 100) },
+        { name: 'Cardio', percentage: (cardio * 1000/10) },
+        { name: 'Fibrosis', percentage: 0 }
+    ];
+
+    // 각 데이터 항목 업데이트
+    data.forEach((item, index) => {
+        let findingName = document.getElementById(`finding${index + 1}`);
+        let bar = document.getElementById(`bar${index + 1}`);
+        let percentageText = document.getElementById(`percentageText${index + 1}`);
+
+        findingName.textContent = item.name;
+        bar.style.width = item.percentage + '%';
+        percentageText.textContent = item.percentage + '%';
+    });
+}
 
 
 
@@ -252,33 +284,7 @@ function goBack() {
     window.location.href = 'board'; // 'board' 페이지로 이동
 }
 
-// Analysis 버튼 클릭 시 분석 시작 
-function updateBar() {
-    // hidden 해놓은 ai 소견 내역을 visible로 변경하기
-    var hiddenElements = document.querySelectorAll('.hidden');
 
-    hiddenElements.forEach(function (element) {
-        element.classList.remove('hidden');
-    });
-
-    // 일단 임의 데이터
-    const data = [
-        { name: 'Effusion', percentage: Math.floor(Math.random() * 100) },
-        { name: 'Cardiomegaly', percentage: Math.floor(Math.random() * 100) },
-        { name: 'Fibrosis', percentage: Math.floor(Math.random() * 100) }
-    ];
-
-    // 각 데이터 항목 업데이트
-    data.forEach((item, index) => {
-        const findingName = document.getElementById(`finding${index + 1}`);
-        const bar = document.getElementById(`bar${index + 1}`);
-        const percentageText = document.getElementById(`percentageText${index + 1}`);
-
-        findingName.textContent = item.name;
-        bar.style.width = item.percentage + '%';
-        percentageText.textContent = item.percentage + '%';
-    });
-}
 
 
 // 이미지 확대 축소 
