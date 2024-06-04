@@ -137,12 +137,13 @@
         
             function updatePage(patients) {
                 $('#patient-data').empty(); // 기존의 게시판 내용 비우기
-        
+                console.log(patients)
                 patients.forEach(function(patient, index) {
                     var newRow = '<tr><td>' + ((currentPage - 1) * 5 + index + 1) + '</td>' +
                                  '<th class="title-align"><a href="/catalog/x-ray-2?patient_id=' + patient.id + '">' + patient.name + '</a></th>' +
                                  '<td>' + patient.birthdate + '</td>' +
                                  '<td>' + (patient.mir_data ? patient.mir_data.date : '2024-06-07') + '</td></tr>';
+                    
                     $('#patient-data').append(newRow);
                 });
         

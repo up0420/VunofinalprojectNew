@@ -1,4 +1,5 @@
 import os
+import argparse
 import pandas as pd
 from PIL import Image
 import torch
@@ -15,7 +16,8 @@ image_dir = 'c:/nih/images'
 csv_file = 'c:/nih/nih.csv'
 
 # CSV 파일 읽기
-df = pd.read_csv(csv_file)
+# Path 사용해서 경로에 파일이 있는지 체크하기
+df = pd.read_csv(str(csv_file))
 
 # 'findings' 열을 리스트 형태로 변환
 df['findings'] = df['findings'].apply(eval)
@@ -30,6 +32,11 @@ df = pd.concat([df, findings_df], axis=1)
 
 # 'findings' 열 제거
 df = df.drop(columns=['findings'])
+
+
+#train_df = df[df['split'] == 'train']
+#val_df = df[df['split'] == 'val']
+#test_df = df[df['split'] == 'test']
 
 # 데이터셋 분할
 train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
