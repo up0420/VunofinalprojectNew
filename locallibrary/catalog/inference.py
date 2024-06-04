@@ -1,13 +1,14 @@
 # inference.py
+import copy
 from typing import Any
 
 import cv2
 import numpy as np
 import onnx
 import onnxruntime
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch
 from univdt.utils.image import load_image
 
 from .pymodels import Model
@@ -42,12 +43,12 @@ def run_inference(path_weight: str, path_input: str) -> float:
         return None
 
 
-_CONFIG_MODEL_CM_PTX = {"encoder": {"name": "convnext_base.fb_in22k_ft_in1k_384",
-                                    "pretrained": False, "num_classes": 0,
-                                    "features_only": True, "in_chans": 1, "out_indices": [2, 3]},
-                        "decoder": {"name": "upsample_concat"},
-                        "header": {"name": "singleconv", "num_classes": 2, "dropout": 0.2,
-                                   "pool": "avg", "interpolate": False, "return_logits": True}}
+_CONFIG_MODEL = {"encoder": {"name": "convnext_base.fb_in22k_ft_in1k_384",
+                             "pretrained": False, "num_classes": 0,
+                             "features_only": True, "in_chans": 1, "out_indices": [2, 3]},
+                 "decoder": {"name": "upsample_concat"},
+                 "header": {"name": "singleconv", "num_classes": 2, "dropout": 0.2,
+                            "pool": "avg", "interpolate": False, "return_logits": True}}
 
 
 class GradCAM:
@@ -113,8 +114,6 @@ def ovelay_cam_on_image(image: np.ndarray | torch.Tensor, cam: np.ndarray | torc
     heatmap = cv2.applyColorMap(np.uint8(255*cam), cv2.COLORMAP_JET)
     heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
     # heatmap = heatmap.astype(np.uint8)
-
-    print(image.shape, heatmap.shape)
     overlay = cv2.addWeighted(image, alpha, heatmap, 1-alpha, 0)
     return overlay
 
@@ -126,16 +125,25 @@ class ChestMateRunner:
 
     def __init__(self,
                  path_weight_cmptx: str,
+                 path_weight_eff_atel: str,
                  threshold_cm: float = 0.5,
-                 threshold_ptx: float = 0.5):
+                 threshold_ptx: float = 0.5,
+                 threshold_effusion: float = 0.5,
+                 threshold_atel: float = 0.5,):
         self.path_weight_cmptx = path_weight_cmptx  # cardiomegaly and pneumothorax model path
+        self.path_weight_eff_atel = path_weight_eff_atel  # effusion and atelectasis model path
 
-        model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL_CM_PTX, path_weight_cmptx)
+        model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL, path_weight_cmptx)
         self.cm_ptx = GradCAM(model_cmptx, model_cmptx.header.conv)
+
+        model_eff_atel = ChestMateRunner.load_model(_CONFIG_MODEL, path_weight_eff_atel)
+        self.eff_atel = GradCAM(model_eff_atel, model_eff_atel.header.conv)
 
         # thresholds
         self.threshold_cm = threshold_cm  # threshold for cardiomegaly
         self.threshold_ptx = threshold_ptx  # threshold for pneumothorax
+        self.threshold_effusion = threshold_effusion  # threshold for effusion
+        self.threshold_atel = threshold_atel  # threshold for atelectasis
 
     @staticmethod
     def unwrap_key(dummy: dict[str, Any], src_key: str, dst_key: str) -> dict[str, Any]:
@@ -173,15 +181,23 @@ class ChestMateRunner:
 
         outputs = {}
         # run cardiomegaly and pneumothorax model
-        cm_ptx: dict[str, Any] = self._run_cm_ptx(image)
+        cm_ptx: dict[str, Any] = self._run_cm_ptx(copy.deepcopy(image))
         outputs.update(cm_ptx)
+
+        # run effusion and atelectasis model
+        eff_atel: dict[str, Any] = self._run_effusion_atel(copy.deepcopy(image))
+        outputs.update(eff_atel)
 
         return outputs
 
-    def _run_cm_ptx(self, image: torch.Tensor) -> dict[str, Any]:
+    def _run_model(self, image: torch.Tensor, model: nn.Module) -> torch.Tensor:
         image = F.interpolate(image, size=(384, 384), mode='bilinear', align_corners=True)
-        _, preds = self.cm_ptx(image)
+        _, preds = model(image)
         preds = preds.squeeze()
+        return preds
+
+    def _run_cm_ptx(self, image: torch.Tensor) -> dict[str, Any]:
+        preds = self._run_model(image, self.cm_ptx.model)
 
         scores = preds.detach().squeeze().cpu().numpy()
         score_cm, score_ptx = scores
@@ -200,6 +216,28 @@ class ChestMateRunner:
             preds[1].backward(retain_graph=True)
             cam: np.ndarray = self.cm_ptx.generate_cam(1)
             overlay = ovelay_cam_on_image(image, cam)
-            outputs['cardiomegaly']['heatmap'] = overlay
+            outputs['pneumothorax']['heatmap'] = overlay
+        return outputs
 
+    def _run_effusion_atel(self, image: torch.Tensor) -> dict[str, Any]:
+        preds = self._run_model(image, self.eff_atel.model)
+
+        scores = preds.detach().squeeze().cpu().numpy()
+        score_effusion, score_atel = scores
+        outputs = {'effusion': {'score': 0.0, 'heatmap': None},
+                   'atelectasis': {'score': 0.0, 'heatmap': None}}
+        outputs['effusion']['score'] = score_effusion
+        outputs['atelectasis']['score'] = score_atel
+
+        if score_effusion > self.threshold_effusion:
+            preds[0].backward(retain_graph=True)
+            cam: np.ndarray = self.eff_atel.generate_cam(0)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['effusion']['heatmap'] = overlay
+
+        if score_atel > self.threshold_atel:
+            preds[1].backward(retain_graph=True)
+            cam: np.ndarray = self.eff_atel.generate_cam(1)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['atelectasis']['heatmap'] = overlay
         return outputs
