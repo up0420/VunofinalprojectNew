@@ -17,7 +17,9 @@
         <section class="video-section">
             <video src="{% static 'main2.mp4' %}" muted autoplay loop></video>
             <header>
-                <h2 class="logo"><i class="fas fa-gamepad"></i>CHEST MATE</h2>
+                <div class="logo">
+                    <img src="../static/img/logo.png" id="logo-img">
+                </div>
                 <nav>
                     <ul class="header_menu">
                         <li><a class="upper" href="{% url 'main' %}">Home</a></li>
@@ -72,7 +74,7 @@
                         <div class="menu">
                             <div class="up">
                                 <img
-                                    src="../static/img/pat.jpg">    
+                                    src="../static/img/patient.png">    
                             </div>
                             <div class="down">
                                 <div class="down1">Patient List</div>
@@ -96,7 +98,7 @@
                         {% comment %} <div class="empty">&emsp;&emsp;&emsp;&emsp;</div> {% endcomment %}
                         <div class="menu">
                             <div class="up">
-                                <img src="https://i.makeagif.com/media/11-24-2021/CbKIRl.gif">
+                                <img src="../static/img/global.png">
                             </div>
                             <div class="down">
                                 <div class="down1">NEWS</div>

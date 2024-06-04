@@ -13,7 +13,6 @@ video {
   height: 100%;
   object-fit: cover;
   z-index: -1; /* Ensures the video is behind other content */
-  opacity: 0.9;
 }
 
 /***** header CSS *****/
@@ -27,11 +26,12 @@ header {
   justify-content: space-between;
 }
 
-.logo {
-  margin: 0;
-  padding: 10px;
-  left: 0;
-  color: white;
+#logo-img {
+  margin-top: 10px;
+  margin-left: 15px;
+  width: 100px;
+  height: auto;
+
 }
 
 .header_menu {
@@ -39,13 +39,11 @@ header {
   padding: 10px;
   right: 0;
   width: auto;
-  padding: 10px;
   list-style: none;
   align-items: center;
   display: flex;
   vertical-align: middle;
 }
-
 
 .header_menu li {
   margin-right: 20px;
