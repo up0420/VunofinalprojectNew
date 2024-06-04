@@ -1,14 +1,18 @@
 *.zip
 venv/
 venv2/
-__pycache__/
 db.sqlite3
 tests.py
 old.*
 manage.py
 settings.py
 
+# temp files
+__pycache__/
+.vscode/
+debug.log
 
-# weights file
+# weights files
 *.pth
 *.pt
+*.ckpt
