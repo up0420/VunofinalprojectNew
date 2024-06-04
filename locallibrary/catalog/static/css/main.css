@@ -54,13 +54,12 @@ header {
     justify-content: space-between;
 }
 
-.logo {
-    margin: 0;
-    padding: 10px;
-    left: 0;
-    color: white;
-    margin-left: 10px;
-    font-size: 25px;
+#logo-img {
+    margin-top: 10px;
+    margin-left: 15px;
+    width: 100px;
+    height: auto;
+
 }
 
 .header_menu {
@@ -68,7 +67,7 @@ header {
     padding: 10px;
     right: 0;
     width: auto;
-    padding: 10px;
+    padding-top: 20px;
     list-style: none;
     align-items: center;
     display: flex;
