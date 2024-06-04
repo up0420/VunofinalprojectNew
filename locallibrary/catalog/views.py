@@ -80,11 +80,18 @@ def chestmatetest(request):
         result = runner.run(path_image= static_image_path)
         
         # NumPy 배열을 삭제하고 JSON으로 직렬화할 준비
-        serialized_result = {
-            'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
-            'pneumothorax': {'score': float(result['pneumothorax']['score'])},
-            'heatmap_image' : result['heatmap']
-        }
+        if result['pneumothorax']['score'] > result['cardiomegaly']['score']:
+            serialized_result = {
+                'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
+                'pneumothorax': {'score': float(result['pneumothorax']['score'])},
+                'heatmap_image' : result['pneumothorax']['heatmap']
+            }
+        else:
+            serialized_result = {
+                'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
+                'pneumothorax': {'score': float(result['pneumothorax']['score'])},
+                'heatmap_image' : result['cardiomegaly']['heatmap']
+            }
         print("this is a json test : " , serialized_result)
         return JsonResponse({'result': serialized_result})
     else:
