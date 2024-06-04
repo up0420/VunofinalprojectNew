@@ -8,6 +8,8 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/contact.css' %}">
     <link rel="stylesheet" href="{% static 'css/qna.css' %}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.4.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.4.0/uicons-regular-straight/css/uicons-regular-straight.css'>
 </head>
 
 <body>
@@ -37,37 +39,30 @@
         <section>
             <div class="box2">
                 <div class="product">
-                    <div class="product1">&nbsp;&nbsp;&nbsp;product</div>
+                    <div class="product1">&nbsp;&nbsp;&nbsp;PRODUCT</div>
                     <div class="product2">
-                        <div class="inBox">CHEST MATE은 의료진들의 일상적인 워크플로우에서 새로운 경험을 제공하고 있습니다</div>
+                        <div class="inBox">CHEST MATE는  의료진들의  일상적인 워크플로우에서 새로운 경험을 제공하고 있습니다</div>
                     </div>
                     <div class="product3">
                         <div class="menuBox">
                             <div class="menuButton">
-                                <button class="choose"><img
-                                        src="https://cdn.icon-icons.com/icons2/916/PNG/512/Menu_icon_icon-icons.com_71858.png"
-                                        width="30px" height="30px"></button>
-                                &nbsp;&nbsp;CHEST MATE - Patient List
+                                <i class="fi fi-rr-document"></i>
+                                <span>CHEST MATE - Patient List</span>
                             </div>
                             <br>
                             <div class="menuButton">
-                                <button class="choose"><img src="https://cdn-icons-png.freepik.com/512/6204/6204586.png"
-                                        width="30px" height="30px"></button>
-                                &nbsp;&nbsp;CHEST MATE - Contact
+                                <i class="fi fi-rr-handshake"></i>
+                                <span>CHEST MATE - About us</span>
                             </div>
                             <br>
                             <div class="menuButton">
-                                <button class="choose"><img
-                                        src="https://w7.pngwing.com/pngs/592/414/png-transparent-computer-icons-news-news-icon-angle-text-rectangle-thumbnail.png"
-                                        width="30px" height="30px"></button>
-                                &nbsp;&nbsp;CHEST MATE - NEWS
+                                <i class="fi fi-rs-world"></i>        
+                                <span>CHEST MATE - NEWS</span>
                             </div>
                             <br>
                             <div class="menuButton">
-                                <button class="choose"><img
-                                        src="https://cdn-icons-png.flaticon.com/512/6369/6369389.png" width="30px"
-                                        height="30px"></button>
-                                &nbsp;&nbsp;CHEST MATE - Q&A
+                                <i class="fi fi-rs-megaphone"></i>
+                                <span>CHEST MATE - Q&A</span>
                             </div>
                         </div>
                     </div>
@@ -77,41 +72,41 @@
                         <div class="menu">
                             <div class="up">
                                 <img
-                                    src="../static/img/pat.jpg">
+                                    src="../static/img/pat.jpg">    
                             </div>
                             <div class="down">
-                                <div class="down1">CHEST MATE - Patient List</div>
+                                <div class="down1">Patient List</div>
                                 <div class="down2">
                                     흉부 X-ray 촬영 기록을 열람할 수 있는 데이터베이스 솔루션
                                 </div>
                             </div>
                         </div>
-                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                        {% comment %} <div class="empty">&emsp;&emsp;&emsp;&emsp;</div> {% endcomment %}
                         <div class="menu">
                             <div class="up">
-                                <img src="https://i.makeagif.com/media/3-26-2017/FG8YwK.gif">
+                                <img src="../static/img/xray.png">
                             </div>
                             <div class="down">
-                                <div class="down1">CHEST MATE - Contact</div>
+                                <div class="down1">Diagnosis</div>
                                 <div class="down2">
                                     흉부 X-ray 촬영 시 주로 관찰되는 주요 비정상적 소견 여부와 비정상일 경우 의심되는 비정상 위치를 정확히 제시하는 인공지능 솔루션
                                 </div>
                             </div>
                         </div>
-                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                        {% comment %} <div class="empty">&emsp;&emsp;&emsp;&emsp;</div> {% endcomment %}
                         <div class="menu">
                             <div class="up">
                                 <img src="https://i.makeagif.com/media/11-24-2021/CbKIRl.gif">
                             </div>
                             <div class="down">
-                                <div class="down1">CHEST MATE - NEWS</div>
+                                <div class="down1">NEWS</div>
                                 <div class="down2">
-                                    이 문장은 테스트용 문장입니다.
+                                    의료계의 새로운 의료 뉴스 제공
                                 </div>
                             </div>
                         </div>
-                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
-                        <div class="menu">
+                        {% comment %} <div class="empty">&emsp;&emsp;&emsp;&emsp;</div> {% endcomment %}
+                        {% comment %} <div class="menu">
                             <div class="up">
                                 <img src="https://i.makeagif.com/media/9-10-2016/PPCKYi.gif">
                             </div>
@@ -121,8 +116,8 @@
                                     흉부 X-ray 진단 관련 질의 응답을 제시하는 커뮤니티 솔루션
                                 </div>
                             </div>
-                        </div>
-                        <div class="empty">&emsp;&emsp;&emsp;&emsp;</div>
+                        </div> {% endcomment %}
+                        {% comment %} <div class="empty">&emsp;&emsp;&emsp;&emsp;</div> {% endcomment %}
                     </div>
                 </div>
             </div>
