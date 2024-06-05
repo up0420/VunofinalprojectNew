@@ -82,8 +82,7 @@ def chestmatetest(request):
         # NumPy 배열을 삭제하고 JSON으로 직렬화할 준비
         serialized_result = {
             'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
-            'pneumothorax': {'score': float(result['pneumothorax']['score'])},
-            'heatmap_image' : result['heatmap']
+            'pneumothorax': {'score': float(result['pneumothorax']['score'])}
         }
         print("this is a json test : " , serialized_result)
         return JsonResponse({'result': serialized_result})
