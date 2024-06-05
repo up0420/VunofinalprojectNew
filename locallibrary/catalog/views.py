@@ -9,6 +9,8 @@ from .inference import run_inference, ChestMateRunner  # 여기서 main 함수�
 from django.conf import settings
 from datetime import datetime
 import logging
+import cv2
+import base64
 
 
 # def patient_xrays(request, pat_id):
@@ -56,6 +58,80 @@ def upload_image(request):
 
 
 # 모델링 부분    
+
+# views.py
+
+
+# 경로를 이스케이프 문자로 수정
+path_weight_cmptx = r'C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pth'
+path_weight_eff_atel = r'C:\VunofinalprojectNew\locallibrary\catalog\model_eff_atel.pth'
+
+# ChestMateRunner 초기화
+runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel)
+
+
+
+logger = logging.getLogger(__name__)
+
+# 히트맵 이미지를 생성하는 함수
+def generate_heatmap_image(image_path):
+    # URL을 로컬 파일 경로로 변환
+    if image_path.startswith('http://') or image_path.startswith('https://'):
+        image_path = image_path.replace('http://127.0.0.1:8000/catalog/', '')
+    
+    if image_path.startswith('media/'):
+        image_path = os.path.join(r'C:\VunofinalprojectNew\locallibrary', image_path)
+    
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"Image file not found at path: {image_path}")
+    
+    # ChestMateRunner를 사용하여 히트맵 생성
+    result = runner.run(image_path)
+    
+    score_cm = result['cardiomegaly']['score']
+    score_ptx = result['pneumothorax']['score']
+    if score_cm > score_ptx:
+        heatmap = result['cardiomegaly']['heatmap']
+    else:
+        heatmap = result['pneumothorax']['heatmap']
+
+    # 히트맵 이미지가 올바르게 생성되었는지 확인
+    if heatmap is None:
+        raise ValueError("Heatmap generation failed: heatmap is None")
+
+    _, buffer = cv2.imencode('.png', heatmap)
+    if buffer is None or len(buffer) == 0:
+        raise ValueError("Image encoding failed: buffer is None or empty")
+
+    heatmap_base64 = base64.b64encode(buffer).decode('utf-8')
+    return heatmap_base64
+
+# 히트맵을 생성하는 뷰 함수
+@csrf_exempt
+def generate_heatmap(request):
+    if request.method == 'POST':
+        image_path = request.POST.get('image_path')
+        logger.debug(f'Received image path: {image_path}')
+        if image_path:
+            try:
+                heatmap = generate_heatmap_image(image_path)
+                logger.debug('Heatmap generated successfully')
+                if heatmap:
+                    return JsonResponse({'heatmap': heatmap})
+                else:
+                    logger.error('Heatmap generation failed')
+                    return JsonResponse({'error': 'Heatmap generation failed'}, status=400)
+            except FileNotFoundError as e:
+                logger.error(f'File not found: {e}')
+                return JsonResponse({'error': str(e)}, status=404)
+            except Exception as e:
+                logger.error(f'Unexpected error: {e}')
+                return JsonResponse({'error': str(e)}, status=500)
+        logger.error('No image path provided')
+        return JsonResponse({'error': 'No image path provided'}, status=400)
+    logger.error('Invalid request method')
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def analyze_image(request):
     image_path = request.GET.get('image_path')
     if image_path:
@@ -70,25 +146,24 @@ def analyze_image(request):
         return JsonResponse({'error': 'No image path provided'}, status=400)
 
 def chestmatetest(request):
-    runner = ChestMateRunner(path_weight_cmptx='C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pth') #, threshold_cm=0.5, threshold_ptx=0.5)
+    runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel) #, threshold_cm=0.5, threshold_ptx=0.5)
     image_path = request.GET.get('image_path')
     if image_path:
         # 이미지의 상대 경로 생성 및 절대 경로로 변환
         static_image_path = os.path.join(settings.MEDIA_ROOT, 'ximages', os.path.basename(image_path))
         print('경로' , static_image_path)
-        
+
         result = runner.run(path_image= static_image_path)
-        
+
         # NumPy 배열을 삭제하고 JSON으로 직렬화할 준비
         serialized_result = {
             'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
-            'pneumothorax': {'score': float(result['pneumothorax']['score'])},
-            'heatmap_image' : result['heatmap']
+            'pneumothorax': {'score': float(result['pneumothorax']['score'])}
         }
         print("this is a json test : " , serialized_result)
         return JsonResponse({'result': serialized_result})
     else:
-        return JsonResponse({'error': 'No results provided'}, status=400)    
+        return JsonResponse({'error': 'No results provided'}, status=400)          
 
 def get_patient_images(request):
     if request.method == 'GET' or request.method == 'POST':
