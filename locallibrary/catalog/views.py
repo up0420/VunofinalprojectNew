@@ -144,27 +144,53 @@ def analyze_image(request):
         return JsonResponse({'result': result})
     else:
         return JsonResponse({'error': 'No image path provided'}, status=400)
-
-def chestmatetest(request):
-    runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel) #, threshold_cm=0.5, threshold_ptx=0.5)
+# cardiomegaly & pneumothorax 모델 설정
+# def cardioPneumo(request):
+#     runner = ChestMateRunner(path_weight_cmptx='C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pth') #, threshold_cm=0.5, threshold_ptx=0.5)
+#     image_path = request.GET.get('image_path')
+#     if image_path:
+#         # 이미지의 상대 경로 생성 및 절대 경로로 변환
+#         static_image_path = os.path.join(settings.MEDIA_ROOT, 'ximages', os.path.basename(image_path))
+#         print('경로' , static_image_path)
+        
+#         result = runner.run(path_image= static_image_path)
+        
+#         # NumPy 배열을 삭제하고 JSON으로 직렬화할 준비
+#         serialized_result = {
+#             'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
+#             'pneumothorax': {'score': float(result['pneumothorax']['score'])},
+#             'heatmap_image' : result['heatmap']
+#         }
+#         print("this is a json test : " , serialized_result)
+#         return JsonResponse({'result': serialized_result})
+#     else:
+#         return JsonResponse({'error': 'No results provided'}, status=400)    
+# cardio, pneumo, effusion, atelec 병합
+def chestMateRunner(request):
+    Model = ChestMateRunner(path_weight_cmptx='C:\\VunofinalprojectNew\\locallibrary\\catalog\\model_cmptx.pth', 
+                            path_weight_eff_atel='C:\\VunofinalprojectNew\\locallibrary\\catalog\\model_eff_atel.pth')
+    
     image_path = request.GET.get('image_path')
     if image_path:
         # 이미지의 상대 경로 생성 및 절대 경로로 변환
         static_image_path = os.path.join(settings.MEDIA_ROOT, 'ximages', os.path.basename(image_path))
-        print('경로' , static_image_path)
-
-        result = runner.run(path_image= static_image_path)
-
-        # NumPy 배열을 삭제하고 JSON으로 직렬화할 준비
+        print('경로:', static_image_path)
+        
+        result = Model.run(path_image=static_image_path)
+        
+        # 두 모델의 결과를 병합하여 직렬화 준비
         serialized_result = {
             'cardiomegaly': {'score': float(result['cardiomegaly']['score'])},
-            'pneumothorax': {'score': float(result['pneumothorax']['score'])}
-        }
-        print("this is a json test : " , serialized_result)
+            'pneumothorax': {'score': float(result['pneumothorax']['score'])},
+            'effusion': {'score': float(result['effusion']['score'])},
+            'atelectasis': {'score': float(result['atelectasis']['score'])},
+            # 'heatmap_image': result['heatmap']          
+            }
+        
+        print("this is a json test:", serialized_result)
         return JsonResponse({'result': serialized_result})
     else:
-        return JsonResponse({'error': 'No results provided'}, status=400)          
-
+        return JsonResponse({'error': 'No results provided'}, status=400)
 def get_patient_images(request):
     if request.method == 'GET' or request.method == 'POST':
         print("Request GET data:", request.GET)
