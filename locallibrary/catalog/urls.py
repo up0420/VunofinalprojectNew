@@ -24,7 +24,7 @@ urlpatterns = [
     path('get_ximage_id/', views.get_ximage_id, name='get_ximage_id'),
     path('contact', views.contact, name = 'contact'),
     path('qna', views.qna, name = 'qna'),
-    path('chestmatetest/', views.chestmatetest, name = 'chestmatetest'),
+    path('chestMateRunner/', views.chestMateRunner, name = 'chestMateRunner'),
     path('generate_heatmap/', views.generate_heatmap, name='generate_heatmap'),
 
 ]
