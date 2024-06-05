@@ -26,7 +26,6 @@ urlpatterns = [
     path('qna', views.qna, name = 'qna'),
     path('chestmatetest/', views.chestmatetest, name = 'chestmatetest'),
     path('generate_heatmap/', views.generate_heatmap, name='generate_heatmap'),
-    path('chestMateRunner/', views.chestMateRunner, name = 'chestMateRunner'),
 
 ]
 
