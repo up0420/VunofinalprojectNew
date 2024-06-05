@@ -167,7 +167,7 @@ body {
     padding: 7px 20px;
     align-items: center;
     width: 90%;
-    height: 100px;
+    height: 135px;
     background-color: #30343D;
     border-radius: 5px;
 }
@@ -221,6 +221,12 @@ body {
     align-content: center;
     text-align: center;
     width: 100%;
+    margin-bottom: 10px;
+    padding: 7px 20px;
+    align-items: center;
+    height: 100px;
+    background-color: #30343D;
+    border-radius: 5px;
 }
 
 .doctor-opinion {

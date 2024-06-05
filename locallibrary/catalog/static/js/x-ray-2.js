@@ -18,11 +18,61 @@
 //             console.error('오류 발생:', error);
 //         });
 // });
+// x-ray-2.js
+
+// Heatmap
+
+let isHeatmapVisible = false;
+let originalImageSrc = '';
+
+function heatmap() {
+    const mainImage = document.getElementById('main-image');
+
+    if (!isHeatmapVisible) {
+        originalImageSrc = mainImage.src; // 현재 이미지 소스를 저장합니다
+        const imagePath = mainImage.getAttribute('src');
+
+        console.log(`Sending request to generate heatmap for image: ${imagePath}`);
+
+        // 이미지 경로를 POST 데이터로 포함시켜 요청합니다
+        fetch('/catalog/generate_heatmap/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'image_path': imagePath
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data); // 응답 데이터 로그 출력
+            if (data.heatmap) {
+                console.log('Heatmap received successfully');
+                mainImage.src = `data:image/png;base64,${data.heatmap}`;
+                isHeatmapVisible = true;
+            } else {
+                console.error('히트맵 생성 오류:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    } else {
+        mainImage.src = originalImageSrc; // 원본 이미지로 되돌립니다
+        isHeatmapVisible = false;
+    }
+}
 
 document.getElementById('analysis').addEventListener('click', function () {
     var imagePath = document.getElementById('main-image').getAttribute('src');
     console.log('imagePath' + imagePath)
-    fetch(`/catalog/chestmatetest/?image_path=${imagePath}`)
+    fetch(`/catalog/chestMateRunner/?image_path=${imagePath}`)
         .then(response => response.json())
         .then(data => {
             console.log('type of data : ', data)
@@ -31,13 +81,46 @@ document.getElementById('analysis').addEventListener('click', function () {
             if (data.result) {
                 const cardiomegalyScore = Math.round(data.result.cardiomegaly.score * 1000) / 1000;
                 const pneumothoraxScore = Math.round(data.result.pneumothorax.score * 1000) / 1000;
+                const effusionScore = Math.round(data.result.effusion.score * 1000) / 1000;
+                const atelectasisScore = Math.round(data.result.atelectasis.score * 1000) / 1000;
                 console.log(cardiomegalyScore)
-                // 결과를 출력
-                document.getElementById('ai-opinion').textContent = `제 소견으로는 Cardiomegaly일 확률이 : ${cardiomegalyScore * 1000/10}%이고
-                Pneumothorax일 확률이 : ${pneumothoraxScore*100}% 입니다`;
-                document.getElementById('ai-opinion').classList.remove('hidden');
 
-                updateBar(cardiomegalyScore, pneumothoraxScore);
+                // 가장 큰 값을 찾아 해당 항목과 점수를 설정
+                let highestScore = cardiomegalyScore;
+                let highestCondition = 'Cardiomegaly';
+                
+                if (pneumothoraxScore > highestScore) {
+                    highestScore = pneumothoraxScore;
+                    highestCondition = 'Pneumothorax';
+                }
+                if (effusionScore > highestScore) {
+                    highestScore = effusionScore;
+                    highestCondition = 'Effusion';
+                }
+                if (atelectasisScore > highestScore) {
+                    highestScore = atelectasisScore;
+                    highestCondition = 'Atelectasis';
+                }
+                const highestScorePercentage = (highestScore * 1000) / 10;
+                const finalText = `제 소견으로는 ${highestCondition}일 확률이 : ${highestScorePercentage}% 입니다`;
+
+                // 결과를 출력
+                const aiOpinionElement = document.getElementById('ai-opinion');
+                aiOpinionElement.textContent = ''; // 초기화
+                aiOpinionElement.classList.remove('hidden');
+
+                // 텍스트를 한 글자씩 출력하는 함수
+                function typeWriter(text, i) {
+                    if (i < text.length) {
+                        aiOpinionElement.textContent += text.charAt(i);
+                        setTimeout(() => typeWriter(text, i + 1), 50);
+                    }
+                }
+
+                // 한 글자씩 출력 시작
+                typeWriter(finalText, 0);
+
+                updateBar(cardiomegalyScore, pneumothoraxScore, effusionScore, atelectasisScore);
             } else {
                 console.error('AI 분석 결과가 없습니다.');
             }
@@ -48,7 +131,7 @@ document.getElementById('analysis').addEventListener('click', function () {
 });
 
 // Analysis 버튼 클릭 시 분석 시작 
-function updateBar(cardio, pneumo) {
+function updateBar(cardio, pneumo, effusion, atelec) {
     // hidden 해놓은 ai 소견 내역을 visible로 변경하기
     var hiddenElements = document.querySelectorAll('.hidden');
 
@@ -57,11 +140,12 @@ function updateBar(cardio, pneumo) {
         element.classList.remove('hidden');
     });
 
-    // Penumo, Cardio 데이터
+    // 수치화를 위한 데이터
     let data = [
         { name: 'Pneumo', percentage: (pneumo * 100) },
         { name: 'Cardio', percentage: (cardio * 1000/10) },
-        { name: 'Fibrosis', percentage: 0 }
+        { name: 'Effusion', percentage: (effusion * 1000/10) },
+        { name: 'Atelectasis', percentage: (atelec * 1000/10) }
     ];
 
     // 각 데이터 항목 업데이트
@@ -75,7 +159,6 @@ function updateBar(cardio, pneumo) {
         percentageText.textContent = item.percentage + '%';
     });
 }
-
 
 
 
@@ -283,7 +366,6 @@ function loadPatientImages() {
 function goBack() {
     window.location.href = 'board'; // 'board' 페이지로 이동
 }
-
 
 
 
