@@ -16,7 +16,7 @@ body {
     padding: 20px; /* 패딩을 늘려서 간격 조정 */
     background-color: #22252E;
     color: #f9f9f9;
-    font-size: 20px;
+    font-size: 19px;
     display: flex;
     justify-content: space-between; /* 요소들 사이에 공간을 둡니다 */
     align-items: center;
@@ -194,7 +194,8 @@ textarea {
     background-color: #30343D;
     border-radius: 5px;
     border: none;
-    color: #ccc;
+    color: #f9f9f9;
+    font-size: 15px;
     width: calc(100% - 40px); /* 너비 조정 */
 }
 

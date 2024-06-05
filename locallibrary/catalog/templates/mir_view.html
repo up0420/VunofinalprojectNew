@@ -22,11 +22,11 @@
     <div class="container">
         <div class="image-gallery">
             <div class="main-container">
-                <p>Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p>
+                <p style="display:none;">Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p>
                 <img id="main-image" src="" alt="Main X-Ray Image">
                 <canvas id="drawing-canvas"></canvas>
             </div>
-            <div>
+            <div style="display:none;">
                 <input type="file" id="image-input" accept="image/*" style="display:none;">
                 <button id="add-image">Add</button>
                 <button id="analysis" onclick="updateBar()">Analysis</button>
@@ -74,7 +74,7 @@
             </div>
             <div class="doctor-opinion">
                 <div class="opinion-title">Doctor Opinion</div>
-                <textarea id="doctor-opinion" rows="15" cols="62"></textarea>
+                <textarea id="doctor-opinion" rows="11" cols="59" readonly></textarea>
             </div>
             <div class="form-actions">
                 <button id="submit">Submit</button>
