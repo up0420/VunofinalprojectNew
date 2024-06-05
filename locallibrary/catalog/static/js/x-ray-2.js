@@ -84,11 +84,41 @@ document.getElementById('analysis').addEventListener('click', function () {
                 const effusionScore = Math.round(data.result.effusion.score * 1000) / 1000;
                 const atelectasisScore = Math.round(data.result.atelectasis.score * 1000) / 1000;
                 console.log(cardiomegalyScore)
+
+                // 가장 큰 값을 찾아 해당 항목과 점수를 설정
+                let highestScore = cardiomegalyScore;
+                let highestCondition = 'Cardiomegaly';
+                
+                if (pneumothoraxScore > highestScore) {
+                    highestScore = pneumothoraxScore;
+                    highestCondition = 'Pneumothorax';
+                }
+                if (effusionScore > highestScore) {
+                    highestScore = effusionScore;
+                    highestCondition = 'Effusion';
+                }
+                if (atelectasisScore > highestScore) {
+                    highestScore = atelectasisScore;
+                    highestCondition = 'Atelectasis';
+                }
+                const highestScorePercentage = (highestScore * 1000) / 10;
+                const finalText = `제 소견으로는 ${highestCondition}일 확률이 : ${highestScorePercentage}% 입니다`;
+
                 // 결과를 출력
-                document.getElementById('ai-opinion').textContent = `제 소견으로는 Cardiomegaly일 확률이 : ${cardiomegalyScore * 1000/10}%이고
-                Pneumothorax일 확률이 : ${pneumothoraxScore*100}% Effusion일 확률이 : ${effusionScore * 1000/10}%이고
-                Atelectasis일 확률이 : ${atelectasisScore * 1000/10}% 입니다`;
-                document.getElementById('ai-opinion').classList.remove('hidden');
+                const aiOpinionElement = document.getElementById('ai-opinion');
+                aiOpinionElement.textContent = ''; // 초기화
+                aiOpinionElement.classList.remove('hidden');
+
+                // 텍스트를 한 글자씩 출력하는 함수
+                function typeWriter(text, i) {
+                    if (i < text.length) {
+                        aiOpinionElement.textContent += text.charAt(i);
+                        setTimeout(() => typeWriter(text, i + 1), 50);
+                    }
+                }
+
+                // 한 글자씩 출력 시작
+                typeWriter(finalText, 0);
 
                 updateBar(cardiomegalyScore, pneumothoraxScore, effusionScore, atelectasisScore);
             } else {
