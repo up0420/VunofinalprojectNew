@@ -22,7 +22,7 @@
 document.getElementById('analysis').addEventListener('click', function () {
     var imagePath = document.getElementById('main-image').getAttribute('src');
     console.log('imagePath' + imagePath)
-    fetch(`/catalog/chestmatetest/?image_path=${imagePath}`)
+    fetch(`/catalog/chestMateRunner/?image_path=${imagePath}`)
         .then(response => response.json())
         .then(data => {
             console.log('type of data : ', data)
@@ -31,13 +31,16 @@ document.getElementById('analysis').addEventListener('click', function () {
             if (data.result) {
                 const cardiomegalyScore = Math.round(data.result.cardiomegaly.score * 1000) / 1000;
                 const pneumothoraxScore = Math.round(data.result.pneumothorax.score * 1000) / 1000;
+                const effusionScore = Math.round(data.result.effusion.score * 1000) / 1000;
+                const atelectasisScore = Math.round(data.result.atelectasis.score * 1000) / 1000;
                 console.log(cardiomegalyScore)
                 // 결과를 출력
                 document.getElementById('ai-opinion').textContent = `제 소견으로는 Cardiomegaly일 확률이 : ${cardiomegalyScore * 1000/10}%이고
-                Pneumothorax일 확률이 : ${pneumothoraxScore*100}% 입니다`;
+                Pneumothorax일 확률이 : ${pneumothoraxScore*100}% Effusion일 확률이 : ${effusionScore * 1000/10}%이고
+                Atelectasis일 확률이 : ${atelectasisScore * 1000/10}% 입니다`;
                 document.getElementById('ai-opinion').classList.remove('hidden');
 
-                updateBar(cardiomegalyScore, pneumothoraxScore);
+                updateBar(cardiomegalyScore, pneumothoraxScore, effusionScore, atelectasisScore);
             } else {
                 console.error('AI 분석 결과가 없습니다.');
             }
@@ -47,8 +50,44 @@ document.getElementById('analysis').addEventListener('click', function () {
         });
 });
 
+// document.getElementById('analysis').addEventListener('click', function () {
+//     var imagePath = document.getElementById('main-image').getAttribute('src');
+//     console.log('imagePath: ' + imagePath);
+
+//     const fetchCardioPneumo = fetch(`/catalog/cardioPneumo/?image_path=${imagePath}`).then(response => response.json());
+//     const fetchAnotherUrl = fetch(`/another/url/?image_path=${imagePath}`).then(response => response.json());
+
+//     Promise.all([fetchCardioPneumo, fetchAnotherUrl])
+//         .then(([cardioPneumoData, anotherUrlData]) => {
+//             console.log('cardioPneumoData: ', cardioPneumoData);
+//             console.log('anotherUrlData: ', anotherUrlData);
+
+//             if (cardioPneumoData.result) {
+//                 const cardiomegalyScore = Math.round(cardioPneumoData.result.cardiomegaly.score * 1000) / 1000;
+//                 const pneumothoraxScore = Math.round(cardioPneumoData.result.pneumothorax.score * 1000) / 1000;
+
+//                 document.getElementById('ai-opinion').textContent = `제 소견으로는 Cardiomegaly일 확률이 : ${cardiomegalyScore * 1000 / 10}%이고
+//                 Pneumothorax일 확률이 : ${pneumothoraxScore * 100}% 입니다`;
+//                 document.getElementById('ai-opinion').classList.remove('hidden');
+
+//                 updateBar(cardiomegalyScore, pneumothoraxScore);
+//             } else {
+//                 console.error('AI 분석 결과가 없습니다.');
+//             }
+
+//             // 추가적인 데이터 처리 로직
+//             if (anotherUrlData.result) {
+//                 // 추가적인 데이터에 대한 처리를 여기에 추가
+//                 console.log('추가적인 데이터 처리: ', anotherUrlData.result);
+//             }
+//         })
+//         .catch(error => {
+//             console.error('오류 발생:', error);
+//         });
+// });
+
 // Analysis 버튼 클릭 시 분석 시작 
-function updateBar(cardio, pneumo) {
+function updateBar(cardio, pneumo, effusion, atelec) {
     // hidden 해놓은 ai 소견 내역을 visible로 변경하기
     var hiddenElements = document.querySelectorAll('.hidden');
 
@@ -57,11 +96,12 @@ function updateBar(cardio, pneumo) {
         element.classList.remove('hidden');
     });
 
-    // Penumo, Cardio 데이터
+    // 수치화를 위한 데이터
     let data = [
         { name: 'Pneumo', percentage: (pneumo * 100) },
         { name: 'Cardio', percentage: (cardio * 1000/10) },
-        { name: 'Fibrosis', percentage: 0 }
+        { name: 'Effusion', percentage: (effusion * 1000/10) },
+        { name: 'Atelectasis', percentage: (atelec * 1000/10) }
     ];
 
     // 각 데이터 항목 업데이트
