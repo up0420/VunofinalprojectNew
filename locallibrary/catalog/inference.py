@@ -87,7 +87,8 @@ class GradCAM:
         activations = activations[0]  # C H W
 
         weights = np.mean(gradients, axis=(1, 2))
-        cam = np.sum(weights[:, np.newaxis, np.newaxis] * activations, axis=0)  # H W
+        cam = np.sum(weights[:, np.newaxis, np.newaxis]
+                     * activations, axis=0)  # H W
         cam = np.maximum(cam, 0)
         cam = cam - np.min(cam)
         cam = cam / np.max(cam)
@@ -115,6 +116,7 @@ def ovelay_cam_on_image(image: np.ndarray | torch.Tensor, cam: np.ndarray | torc
     heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
     # heatmap = heatmap.astype(np.uint8)
     overlay = cv2.addWeighted(image, alpha, heatmap, 1-alpha, 0)
+    overlay = cv2.cvtColor(overlay, cv2.COLOR_RGB2BGR)
     return overlay
 
 
@@ -130,13 +132,17 @@ class ChestMateRunner:
                  threshold_ptx: float = 0.5,
                  threshold_effusion: float = 0.5,
                  threshold_atel: float = 0.5,):
-        self.path_weight_cmptx = path_weight_cmptx  # cardiomegaly and pneumothorax model path
-        self.path_weight_eff_atel = path_weight_eff_atel  # effusion and atelectasis model path
+        # cardiomegaly and pneumothorax model path
+        self.path_weight_cmptx = path_weight_cmptx
+        # effusion and atelectasis model path
+        self.path_weight_eff_atel = path_weight_eff_atel
 
-        model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL, path_weight_cmptx)
+        model_cmptx = ChestMateRunner.load_model(
+            _CONFIG_MODEL, path_weight_cmptx)
         self.cm_ptx = GradCAM(model_cmptx, model_cmptx.header.conv)
 
-        model_eff_atel = ChestMateRunner.load_model(_CONFIG_MODEL, path_weight_eff_atel)
+        model_eff_atel = ChestMateRunner.load_model(
+            _CONFIG_MODEL, path_weight_eff_atel)
         self.eff_atel = GradCAM(model_eff_atel, model_eff_atel.header.conv)
 
         # thresholds
@@ -185,13 +191,15 @@ class ChestMateRunner:
         outputs.update(cm_ptx)
 
         # run effusion and atelectasis model
-        eff_atel: dict[str, Any] = self._run_effusion_atel(copy.deepcopy(image))
+        eff_atel: dict[str, Any] = self._run_effusion_atel(
+            copy.deepcopy(image))
         outputs.update(eff_atel)
 
         return outputs
 
     def _run_model(self, image: torch.Tensor, model: nn.Module) -> torch.Tensor:
-        image = F.interpolate(image, size=(384, 384), mode='bilinear', align_corners=True)
+        image = F.interpolate(image, size=(384, 384),
+                              mode='bilinear', align_corners=True)
         _, preds = model(image)
         preds = preds.squeeze()
         return preds
