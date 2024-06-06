@@ -65,9 +65,13 @@ def upload_image(request):
 # 경로를 이스케이프 문자로 수정
 path_weight_cmptx = r'C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pth'
 path_weight_eff_atel = r'C:\VunofinalprojectNew\locallibrary\catalog\model_eff_atel.pth'
-path_weight_emp_eda_pt_fib = 'C:\VunofinalprojectNew\locallibrary\catalog\model_emp_eda_pt_fib.pth'
+path_weight_emp_eda_pt_fib = r'C:\VunofinalprojectNew\locallibrary\catalog\model_emp_eda_pt_fib.pth'
 # ChestMateRunner 초기화
+<<<<<<< HEAD
 runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel, path_weight_emp_eda_pt_fib)
+=======
+runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel,path_weight_emp_eda_pt_fib)
+>>>>>>> main
 
 
 
@@ -167,7 +171,8 @@ def analyze_image(request):
 
 def chestMateRunner(request):
     Model = ChestMateRunner(path_weight_cmptx=path_weight_cmptx, 
-                            path_weight_eff_atel=path_weight_eff_atel)
+                            path_weight_eff_atel=path_weight_eff_atel,
+                            path_weight_emp_eda_pt_fib=path_weight_emp_eda_pt_fib)
     
     image_path = request.GET.get('image_path')
     if image_path:
@@ -183,6 +188,10 @@ def chestMateRunner(request):
             'pneumothorax': {'score': float(result['pneumothorax']['score'])},
             'effusion': {'score': float(result['effusion']['score'])},
             'atelectasis': {'score': float(result['atelectasis']['score'])},
+            'emphysema': {'score': float(result['emphysema']['score'])},
+            'edema': {'score': float(result['edema']['score'])},
+            'pleural_thickening': {'score': float(result['pleural_thickening']['score'])},
+            'fibrosis': {'score': float(result['fibrosis']['score'])},
             # 'heatmap_image': result['heatmap']          
             }
         
