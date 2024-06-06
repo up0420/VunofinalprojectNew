@@ -577,7 +577,7 @@ function setupSubmitButton() {
             return;
         }
 
-        const aiOpinion = aiOpinionElement.textContent.split(": ")[1]; // AI 소견에서 결과만 추출
+        const aiOpinion = aiOpinionElement.textContent //.split(": ")[1]; // AI 소견에서 결과만 추출
         const doctorOpinion = doctorOpinionElement.value;
         const patientId = patientIdElement.textContent.trim();
         let imageUrl = mainImageElement.src.replace(window.location.origin + '/', '').trim();

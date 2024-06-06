@@ -196,7 +196,7 @@ function fetchMIRData(imagePath) {
                         console.log('ai/doctor opinion:', data);
                         if (data.success) {
                             // ai-opinion 값에 toFixed(2) 적용하여 소수점 이하 두 자리까지 표시
-                            const aiOpinion = parseFloat(data.ai_opinion).toFixed(2);
+                            const aiOpinion = data.ai_opinion;
                             document.getElementById('ai-opinion').innerHTML = aiOpinion;
                             document.getElementById('doctor-opinion').value = data.doctor_opinion;
                         } else {
