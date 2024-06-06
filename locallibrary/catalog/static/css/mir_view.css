@@ -16,7 +16,7 @@ body {
     padding: 20px; /* 패딩을 늘려서 간격 조정 */
     background-color: #22252E;
     color: #f9f9f9;
-    font-size: 20px;
+    font-size: 19px;
     display: flex;
     justify-content: space-between; /* 요소들 사이에 공간을 둡니다 */
     align-items: center;
@@ -108,7 +108,7 @@ body {
 
 .diagnosis-header {
     font-size: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     background-color: #30343D;
     border-radius: 5px;
     padding: 10px 20px;
@@ -116,7 +116,7 @@ body {
     width: 90%;
 }
 
-.diagnosis-details {
+/* .diagnosis-details {
     margin-bottom: 10px;
     padding: 7px 20px;
     align-items: center;
@@ -124,7 +124,7 @@ body {
     height: 100px;
     background-color: #30343D;
     border-radius: 5px;
-}
+} */
 
 .hidden {
     visibility: hidden;
@@ -163,7 +163,7 @@ body {
 .opinion-title {
     text-align: center;
     margin: 3px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .ai-opinion {
@@ -175,6 +175,12 @@ body {
     align-content: center;
     text-align: center;
     width: 100%;
+    margin-bottom: 10px;
+    padding: 7px 20px;
+    align-items: center;
+    height: 180px;
+    background-color: #30343D;
+    border-radius: 5px;
 }
 
 #ai-opinion{
@@ -190,12 +196,16 @@ body {
 textarea {
     resize: none;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     background-color: #30343D;
     border-radius: 5px;
     border: none;
-    color: #ccc;
+    color: #f9f9f9;
+    font-size: 15px;
     width: calc(100% - 40px); /* 너비 조정 */
+    align-content: center;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
 .form-actions {
