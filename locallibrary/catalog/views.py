@@ -367,7 +367,7 @@ def get_allpatient_data(request):
     search_name = request.GET.get('search_name')
     search_major = request.GET.get('search_major')
 
-    patients = Patient.objects.all()
+    patients = Patient.objects.all().order_by('-PAT_ID')
     
     if search_name:
         patients = patients.filter(PAT_NAME__icontains=search_name)
