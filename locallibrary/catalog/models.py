@@ -59,7 +59,7 @@ class XImage(models.Model):
 
 class MIR(models.Model):
     XIMAGE_ID = models.OneToOneField(XImage, on_delete=models.CASCADE, primary_key=True)
-    MIR_RESULT = models.FloatField()
+    MIR_RESULT = models.TextField()
     MIR_MIR = models.TextField()
     MIR_DATE = models.DateTimeField(auto_now_add=True)
     DOC_ID = models.ForeignKey(Doctor, on_delete=models.CASCADE)

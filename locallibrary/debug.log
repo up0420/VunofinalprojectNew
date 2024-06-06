@@ -9935,3 +9935,5 @@ django.template.base.VariableDoesNotExist: Failed lookup for key [name] in <URLR
 2024-06-04 12:31:21,963 - INFO - C:\VunofinalprojectNew\locallibrary\catalog\views.py changed, reloading.
 2024-06-05 17:44:46,228 - WARNING - Not Found: /favicon.ico
 2024-06-05 17:46:11,362 - WARNING - Not Found: /favicon.ico
+2024-06-06 13:10:08,610 - INFO - C:\VunofinalprojectNew\locallibrary\catalog\views.py changed, reloading.
+2024-06-06 13:10:49,042 - INFO - C:\VunofinalprojectNew\locallibrary\catalog\views.py changed, reloading.
