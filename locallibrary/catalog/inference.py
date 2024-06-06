@@ -128,14 +128,19 @@ class ChestMateRunner:
     def __init__(self,
                  path_weight_cmptx: str,
                  path_weight_eff_atel: str,
+                 path_weight_emp_eda_pt_fib: str,
                  threshold_cm: float = 0.5,
                  threshold_ptx: float = 0.5,
                  threshold_effusion: float = 0.5,
-                 threshold_atel: float = 0.5,):
+                 threshold_atel: float = 0.5,
+
+                 ):
         # cardiomegaly and pneumothorax model path
         self.path_weight_cmptx = path_weight_cmptx
         # effusion and atelectasis model path
         self.path_weight_eff_atel = path_weight_eff_atel
+        # emphysema, edema, pleural thickening, and fibrosis model path
+        self.path_weight_emp_eda_pt_fib = path_weight_emp_eda_pt_fib
 
         model_cmptx = ChestMateRunner.load_model(
             _CONFIG_MODEL, path_weight_cmptx)
@@ -144,6 +149,12 @@ class ChestMateRunner:
         model_eff_atel = ChestMateRunner.load_model(
             _CONFIG_MODEL, path_weight_eff_atel)
         self.eff_atel = GradCAM(model_eff_atel, model_eff_atel.header.conv)
+
+        _CONFIG_MODEL['header']['num_classes'] = 4
+        model_emp_eda_pt_fib = ChestMateRunner.load_model(
+            _CONFIG_MODEL, path_weight_emp_eda_pt_fib)
+        self.emp_eda_pt_fib = GradCAM(
+            model_emp_eda_pt_fib, model_emp_eda_pt_fib.header.conv)
 
         # thresholds
         self.threshold_cm = threshold_cm  # threshold for cardiomegaly
