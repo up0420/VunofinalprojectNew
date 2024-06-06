@@ -143,8 +143,8 @@ function updateBar(cardio, pneumo, effusion, atelec) {
 
     // 수치화를 위한 데이터
     let data = [
-        { name: 'Pneumo', percentage: (pneumo * 100) },
-        { name: 'Cardio', percentage: (cardio * 1000/10) },
+        { name: 'Pneumothorax', percentage: (pneumo * 1000/10) },
+        { name: 'Cardiomegaly', percentage: (cardio * 1000/10) },
         { name: 'Effusion', percentage: (effusion * 1000/10) },
         { name: 'Atelectasis', percentage: (atelec * 1000/10) }
     ];
