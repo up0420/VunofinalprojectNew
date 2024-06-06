@@ -145,10 +145,12 @@ class ChestMateRunner:
         # emphysema, edema, pleural thickening, and fibrosis model path
         self.path_weight_emp_eda_pt_fib = path_weight_emp_eda_pt_fib
 
+        _CONFIG_MODEL['header']['num_classes'] = 2
         model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL,
                                                  path_weight_cmptx)
         self.cm_ptx = GradCAM(model_cmptx, model_cmptx.header.conv)
 
+        _CONFIG_MODEL['header']['num_classes'] = 2
         model_eff_atel = ChestMateRunner.load_model(_CONFIG_MODEL,
                                                     path_weight_eff_atel)
         self.eff_atel = GradCAM(model_eff_atel, model_eff_atel.header.conv)
