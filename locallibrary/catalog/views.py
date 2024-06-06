@@ -67,11 +67,7 @@ path_weight_cmptx = r'C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pt
 path_weight_eff_atel = r'C:\VunofinalprojectNew\locallibrary\catalog\model_eff_atel.pth'
 path_weight_emp_eda_pt_fib = r'C:\VunofinalprojectNew\locallibrary\catalog\model_emp_eda_pt_fib.pth'
 # ChestMateRunner 초기화
-<<<<<<< HEAD
-runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel, path_weight_emp_eda_pt_fib)
-=======
 runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel,path_weight_emp_eda_pt_fib)
->>>>>>> main
 
 
 
