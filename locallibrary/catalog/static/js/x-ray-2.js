@@ -172,8 +172,8 @@ function updateBar(cardio, pneumo, effusion, atelec, emphy, edema, pleural, fibr
         { name: 'Atelectasis', percentage: (atelec * 1000/10) },
         { name: 'Emphysema', percentage: (emphy * 1000/10) },
         { name: 'Edema', percentage: (edema * 1000/10) },
-        { name: 'Pleural_thickening', percentage: (pleural * 1000/10) },
-        { name: 'fibrosis', percentage: (fibrosis * 1000/10) },
+        { name: 'Pleural_thick', percentage: (pleural * 1000/10) },
+        { name: 'Fibrosis', percentage: (fibrosis * 1000/10) },
     ];
 
     // 퍼센티지 값으로 데이터 정렬 (내림차순)
