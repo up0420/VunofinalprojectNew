@@ -319,7 +319,7 @@ def get_patient_data(request):
     search_date_end = request.GET.get('search_date_end')
     search_name = request.GET.get('search_name')
   
-    patients = Patient.objects.filter(DOC_ID=doc_id)
+    patients = Patient.objects.filter(DOC_ID=doc_id).order_by('-PAT_ID')
     
     if search_name:
         patients = patients.filter(PAT_NAME__icontains=search_name)
