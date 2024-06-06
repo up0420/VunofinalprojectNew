@@ -33,6 +33,7 @@
                 <button id="analysis" onclick="updateBar()">Analysis</button>
                 <button id="save-image">Save</button>
             </div>
+            <p id="error-message" style="color: red;"></p> <!-- 오류 메시지 표시용 단락 요소 -->
             <div class="thumbnail-images">
                 <img class="thumbnail" src="">
                 <img class="thumbnail" src="">
@@ -53,7 +54,7 @@
             <i class="fi fi-br-rotate-right" id="return" aria-label="Reset"></i>
         </div>
         <div class="zoom-area">
-            <input type="range"  id="contrast-slider" min="50" max="170" value="100" style="writing-mode: vertical-lr; direction: rtl">
+            <input type="range" id="contrast-slider" min="50" max="170" value="100" style="writing-mode: vertical-lr; direction: rtl">
         </div>
 
         <!-- 진단 area -->
@@ -91,10 +92,6 @@
                     </div>
                     <div class="percentage" id="percentageText4">0%</div>
                 </div>
-
-                
-
-                
             </div>
             <div class="ai-opinion">
                 <div class="ai-opinion-box"><span id="ai-opinion" class="hidden">ai 소견</span></div>

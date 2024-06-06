@@ -27,6 +27,7 @@ let originalImageSrc = '';
 
 function heatmap() {
     const mainImage = document.getElementById('main-image');
+    const errorMessage = document.getElementById('error-message');
 
     if (!isHeatmapVisible) {
         originalImageSrc = mainImage.src; // 현재 이미지 소스를 저장합니다
@@ -56,16 +57,20 @@ function heatmap() {
                 console.log('Heatmap received successfully');
                 mainImage.src = `data:image/png;base64,${data.heatmap}`;
                 isHeatmapVisible = true;
+                errorMessage.textContent = ''; // 오류 메시지를 지웁니다
             } else {
                 console.error('히트맵 생성 오류:', data.error);
+                errorMessage.textContent = '유의한 병변이 없습니다.';
             }
         })
         .catch(error => {
             console.error('Fetch error:', error);
+            errorMessage.textContent = '유의한 병변이 없습니다.';
         });
     } else {
         mainImage.src = originalImageSrc; // 원본 이미지로 되돌립니다
         isHeatmapVisible = false;
+        errorMessage.textContent = ''; // 오류 메시지를 지웁니다
     }
 }
 
@@ -84,12 +89,17 @@ document.getElementById('analysis').addEventListener('click', function () {
                 const pneumothoraxScore = Math.round(data.result.pneumothorax.score * 1000) / 1000;
                 const effusionScore = Math.round(data.result.effusion.score * 1000) / 1000;
                 const atelectasisScore = Math.round(data.result.atelectasis.score * 1000) / 1000;
+                const emphysemaScore = Math.round(data.result.emphysema.score * 1000) / 1000;
+                const edemaScore = Math.round(data.result.edema.score * 1000) / 1000;               
+                const pleuralThickeningScore = Math.round(data.result.pleural_thickening.score * 1000) / 1000;
+                const fibrosisScore = Math.round(data.result.fibrosis.score * 1000) / 1000;
+
                 console.log(cardiomegalyScore)
 
                 // 가장 큰 값을 찾아 해당 항목과 점수를 설정
                 let highestScore = cardiomegalyScore;
                 let highestCondition = 'Cardiomegaly';
-                
+
                 if (pneumothoraxScore > highestScore) {
                     highestScore = pneumothoraxScore;
                     highestCondition = 'Pneumothorax';
@@ -101,6 +111,22 @@ document.getElementById('analysis').addEventListener('click', function () {
                 if (atelectasisScore > highestScore) {
                     highestScore = atelectasisScore;
                     highestCondition = 'Atelectasis';
+                }
+                if (emphysemaScore > highestScore) {
+                    highestScore = emphysemaScore;
+                    highestCondition = 'Emphysema';
+                }
+                if (edemaScore > highestScore) {
+                    highestScore = edemaScore;
+                    highestCondition = 'Edema';
+                }
+                if (pleuralThickeningScore > highestScore) {
+                    highestScore = pleuralThickeningScore;
+                    highestCondition = 'Pleural Thickening';
+                }
+                if (fibrosisScore > highestScore) {
+                    highestScore = fibrosisScore;
+                    highestCondition = 'Fibrosis';
                 }
                 const highestScorePercentage = (highestScore * 1000) / 10;
                 const finalText = `제 소견으로는 ${highestCondition}일 확률이 : ${highestScorePercentage}% 입니다`;
@@ -121,7 +147,9 @@ document.getElementById('analysis').addEventListener('click', function () {
                 // 한 글자씩 출력 시작
                 typeWriter(finalText, 0);
 
-                updateBar(cardiomegalyScore, pneumothoraxScore, effusionScore, atelectasisScore);
+                updateBar(cardiomegalyScore, pneumothoraxScore, effusionScore, atelectasisScore,
+                    emphysemaScore, edemaScore, pleuralThickeningScore, fibrosisScore
+                );
             } else {
                 console.error('AI 분석 결과가 없습니다.');
             }
@@ -132,7 +160,7 @@ document.getElementById('analysis').addEventListener('click', function () {
 });
 
 // Analysis 버튼 클릭 시 분석 시작 
-function updateBar(cardio, pneumo, effusion, atelec) {
+function updateBar(cardio, pneumo, effusion, atelec, emphy, edema, pleural, fibrosis) {
     // hidden 해놓은 ai 소견 내역을 visible로 변경하기
     var hiddenElements = document.querySelectorAll('.hidden');
 
@@ -146,11 +174,21 @@ function updateBar(cardio, pneumo, effusion, atelec) {
         { name: 'Pneumothorax', percentage: (pneumo * 1000/10) },
         { name: 'Cardiomegaly', percentage: (cardio * 1000/10) },
         { name: 'Effusion', percentage: (effusion * 1000/10) },
-        { name: 'Atelectasis', percentage: (atelec * 1000/10) }
+        { name: 'Atelectasis', percentage: (atelec * 1000/10) },
+        { name: 'Emphysema', percentage: (emphy * 1000/10) },
+        { name: 'Edema', percentage: (edema * 1000/10) },
+        { name: 'Pleural_thick', percentage: (pleural * 1000/10) },
+        { name: 'Fibrosis', percentage: (fibrosis * 1000/10) },
     ];
 
+    // 퍼센티지 값으로 데이터 정렬 (내림차순)
+    data.sort((a, b) => b.percentage - a.percentage);
+
+    // 상위 4개의 항목을 선택
+    let top4Data = data.slice(0, 4);
+
     // 각 데이터 항목 업데이트
-    data.forEach((item, index) => {
+    top4Data.forEach((item, index) => {
         let findingName = document.getElementById(`finding${index + 1}`);
         let bar = document.getElementById(`bar${index + 1}`);
         let percentageText = document.getElementById(`percentageText${index + 1}`);
