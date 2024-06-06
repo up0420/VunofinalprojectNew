@@ -90,10 +90,18 @@ def generate_heatmap_image(image_path):
     
     score_cm = result['cardiomegaly']['score']
     score_ptx = result['pneumothorax']['score']
-    if score_cm > score_ptx:
+    score_eff = result['effusion']['score']
+    score_atel = result['atelectasis']['score']
+    
+    max_score = max(score_cm, score_ptx, score_eff, score_atel)
+    if max_score == score_cm:
         heatmap = result['cardiomegaly']['heatmap']
-    else:
+    elif max_score == score_ptx:
         heatmap = result['pneumothorax']['heatmap']
+    elif max_score == score_eff:
+        heatmap = result['effusion']['heatmap']
+    else:
+        heatmap = result['atelectasis']['heatmap']
 
     # 히트맵 이미지가 올바르게 생성되었는지 확인
     if heatmap is None:
