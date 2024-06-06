@@ -153,14 +153,14 @@ xychart-beta
 - 병변 검출 시, 함께 검출되는 병변으로 'Infiltration', 'Effusion', 'Atelectasis'가 많음. 따라서 이 병들은 발병률이 높거나 다른 병변의 생김새와 헷갈릴 가능성이 있음.
 
 ### AU ROC 성능 스코어
-| findings(threshold) | threshold | auroc  | sensitivity | specificity |
-| :-----------------: | :-------: | :----: | :---------: | :---------: |
-|      Effusion       |   0.40    | 0.8076 |   0.7213    |   0.7488    |
-|      Emphysema      |   0.15    | 0.8954 |   0.7951    |   0.8475    |
-|     Atelectasis     |   0.30    | 0.7258 |   0.6700    |   0.6592    |
-|        Edema        |   0.30    | 0.8237 |   0.7524    |   0.7535    |
-| Pleural-Thickening  |   0.25    | 0.7330 |   0.6675    |   0.6879    |
-|    Cardiomegaly     |   0.15    | 0.8616 |   0.7717    |   0.7764    |
-|    Pneumothorax     |   0.45    | 0.8367 |   0.7741    |   0.7503    |
-|      Fibrosis       |   0.15    | 0.7390 |   0.6873    |   0.6612    |
+| findings(threshold) | threshold | auroc  | torchxrv | sensitivity | specificity |
+| :-----------------: | :-------: | :----: | :------: | :---------: | :---------: |
+|      Effusion       |   0.40    | 0.8076 |   0.85   |   0.7213    |   0.7488    |
+|      Emphysema      |   0.15    | 0.8954 |   0.73   |   0.7951    |   0.8475    |
+|     Atelectasis     |   0.30    | 0.7258 |   0.76   |   0.6700    |   0.6592    |
+|        Edema        |   0.30    | 0.8237 |   0.85   |   0.7524    |   0.7535    |
+| Pleural-Thickening  |   0.25    | 0.7330 |   0.74   |   0.6675    |   0.6879    |
+|    Cardiomegaly     |   0.15    | 0.8616 |   0.88   |   0.7717    |   0.7764    |
+|    Pneumothorax     |   0.45    | 0.8367 |   0.75   |   0.7741    |   0.7503    |
+|      Fibrosis       |   0.15    | 0.7390 |   0.72   |   0.6873    |   0.6612    |
 
