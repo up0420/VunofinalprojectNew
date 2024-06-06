@@ -30,7 +30,7 @@ function heatmap() {
 
     if (!isHeatmapVisible) {
         originalImageSrc = mainImage.src; // 현재 이미지 소스를 저장합니다
-        const imagePath = mainImage.getAttribute('src');
+        const imagePath = mainImage.getAttribute('src').replace('http://127.0.0.1:8000/catalog/', '');
 
         console.log(`Sending request to generate heatmap for image: ${imagePath}`);
 
@@ -68,6 +68,7 @@ function heatmap() {
         isHeatmapVisible = false;
     }
 }
+
 
 document.getElementById('analysis').addEventListener('click', function () {
     var imagePath = document.getElementById('main-image').getAttribute('src');
