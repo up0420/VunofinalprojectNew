@@ -133,7 +133,10 @@ class ChestMateRunner:
                  threshold_ptx: float = 0.5,
                  threshold_effusion: float = 0.5,
                  threshold_atel: float = 0.5,
-
+                 threshold_empysema: float = 0.5,
+                 threshold_edema: float = 0.5,
+                 threshold_pleural_thickening: float = 0.5,
+                 threshold_fibrosis: float = 0.5,
                  ):
         # cardiomegaly and pneumothorax model path
         self.path_weight_cmptx = path_weight_cmptx
@@ -142,25 +145,29 @@ class ChestMateRunner:
         # emphysema, edema, pleural thickening, and fibrosis model path
         self.path_weight_emp_eda_pt_fib = path_weight_emp_eda_pt_fib
 
-        model_cmptx = ChestMateRunner.load_model(
-            _CONFIG_MODEL, path_weight_cmptx)
+        model_cmptx = ChestMateRunner.load_model(_CONFIG_MODEL,
+                                                 path_weight_cmptx)
         self.cm_ptx = GradCAM(model_cmptx, model_cmptx.header.conv)
 
-        model_eff_atel = ChestMateRunner.load_model(
-            _CONFIG_MODEL, path_weight_eff_atel)
+        model_eff_atel = ChestMateRunner.load_model(_CONFIG_MODEL,
+                                                    path_weight_eff_atel)
         self.eff_atel = GradCAM(model_eff_atel, model_eff_atel.header.conv)
 
         _CONFIG_MODEL['header']['num_classes'] = 4
-        model_emp_eda_pt_fib = ChestMateRunner.load_model(
-            _CONFIG_MODEL, path_weight_emp_eda_pt_fib)
-        self.emp_eda_pt_fib = GradCAM(
-            model_emp_eda_pt_fib, model_emp_eda_pt_fib.header.conv)
+        model_emp_eda_pt_fib = ChestMateRunner.load_model(_CONFIG_MODEL,
+                                                          path_weight_emp_eda_pt_fib)
+        self.emp_eda_pt_fib = GradCAM(model_emp_eda_pt_fib,
+                                      model_emp_eda_pt_fib.header.conv)
 
         # thresholds
         self.threshold_cm = threshold_cm  # threshold for cardiomegaly
         self.threshold_ptx = threshold_ptx  # threshold for pneumothorax
         self.threshold_effusion = threshold_effusion  # threshold for effusion
         self.threshold_atel = threshold_atel  # threshold for atelectasis
+        self.threshold_empysema = threshold_empysema  # threshold for emphysema
+        self.threshold_edema = threshold_edema  # threshold for edema
+        self.threshold_pleural_thickening = threshold_pleural_thickening
+        self.threshold_fibrosis = threshold_fibrosis  # threshold for fibrosis
 
     @staticmethod
     def unwrap_key(dummy: dict[str, Any], src_key: str, dst_key: str) -> dict[str, Any]:
@@ -205,6 +212,11 @@ class ChestMateRunner:
         eff_atel: dict[str, Any] = self._run_effusion_atel(
             copy.deepcopy(image))
         outputs.update(eff_atel)
+
+        # run emphysema, edema, pleural thickening, and fibrosis model
+        emp_eda_pt_fib: dict[str, Any] = self._run_emp_eda_pt_fib(
+            copy.deepcopy(image))
+        outputs.update(emp_eda_pt_fib)
 
         return outputs
 
@@ -259,4 +271,43 @@ class ChestMateRunner:
             cam: np.ndarray = self.eff_atel.generate_cam(1)
             overlay = ovelay_cam_on_image(image, cam)
             outputs['atelectasis']['heatmap'] = overlay
+        return outputs
+
+    def _run_emp_eda_pt_fib(self, image: torch.Tensor) -> dict[str, Any]:
+        preds = self._run_model(image, self.emp_eda_pt_fib.model)
+
+        scores = preds.detach().squeeze().cpu().numpy()
+        score_emphysema, score_edema, score_pt, score_fibrosis = scores
+        outputs = {'emphysema': {'score': 0.0, 'heatmap': None},
+                   'edema': {'score': 0.0, 'heatmap': None},
+                   'pleural_thickening': {'score': 0.0, 'heatmap': None},
+                   'fibrosis': {'score': 0.0, 'heatmap': None}}
+        outputs['emphysema']['score'] = score_emphysema
+        outputs['edema']['score'] = score_edema
+        outputs['pleural_thickening']['score'] = score_pt
+        outputs['fibrosis']['score'] = score_fibrosis
+
+        if score_emphysema > self.threshold_empysema:
+            preds[0].backward(retain_graph=True)
+            cam: np.ndarray = self.emp_eda_pt_fib.generate_cam(0)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['emphysema']['heatmap'] = overlay
+
+        if score_edema > self.threshold_edema:
+            preds[1].backward(retain_graph=True)
+            cam: np.ndarray = self.emp_eda_pt_fib.generate_cam(1)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['edema']['heatmap'] = overlay
+
+        if score_pt > self.threshold_pleural_thickening:
+            preds[2].backward(retain_graph=True)
+            cam: np.ndarray = self.emp_eda_pt_fib.generate_cam(2)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['pleural_thickening']['heatmap'] = overlay
+
+        if score_fibrosis > self.threshold_fibrosis:
+            preds[3].backward(retain_graph=True)
+            cam: np.ndarray = self.emp_eda_pt_fib.generate_cam(3)
+            overlay = ovelay_cam_on_image(image, cam)
+            outputs['fibrosis']['heatmap'] = overlay
         return outputs
