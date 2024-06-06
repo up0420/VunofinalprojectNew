@@ -151,3 +151,13 @@ xychart-beta
 
 **Observation**
 - 병변 검출 시, 함께 검출되는 병변으로 'Infiltration', 'Effusion', 'Atelectasis'가 많음. 따라서 이 병들은 발병률이 높거나 다른 병변의 생김새와 헷갈릴 가능성이 있음.
+
+### AU ROC 성능 스코어
+|Effusion           |0.8076
+|Emphysema          |0.8954
+|Atelectasis        |0.7258
+|Edema              |0.8237
+|Pleural Thickening |0.733
+|Cardiomegaly       |0.8616
+|Pneumothorax       |0.8367
+|Fibrosis           |0.739
