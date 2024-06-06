@@ -65,7 +65,7 @@ def upload_image(request):
 # 경로를 이스케이프 문자로 수정
 path_weight_cmptx = r'C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pth'
 path_weight_eff_atel = r'C:\VunofinalprojectNew\locallibrary\catalog\model_eff_atel.pth'
-
+path_weight_emp_eda_pt_fib = 'C:\VunofinalprojectNew\locallibrary\catalog\model_emp_eda_pt_fib.pth'
 # ChestMateRunner 초기화
 runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel)
 
