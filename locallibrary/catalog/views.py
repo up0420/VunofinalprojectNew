@@ -67,7 +67,7 @@ path_weight_cmptx = r'C:\VunofinalprojectNew\locallibrary\catalog\model_cmptx.pt
 path_weight_eff_atel = r'C:\VunofinalprojectNew\locallibrary\catalog\model_eff_atel.pth'
 path_weight_emp_eda_pt_fib = 'C:\VunofinalprojectNew\locallibrary\catalog\model_emp_eda_pt_fib.pth'
 # ChestMateRunner 초기화
-runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel)
+runner = ChestMateRunner(path_weight_cmptx, path_weight_eff_atel, path_weight_emp_eda_pt_fib)
 
 
 
@@ -92,16 +92,28 @@ def generate_heatmap_image(image_path):
     score_ptx = result['pneumothorax']['score']
     score_eff = result['effusion']['score']
     score_atel = result['atelectasis']['score']
+    score_emph = result['emphysema']['score']
+    score_edema = result['edema']['score']
+    score_pleural = result['pleural_thickening']['score']
+    score_fibrosis = result['fibrosis']['score']
     
-    max_score = max(score_cm, score_ptx, score_eff, score_atel)
+    max_score = max(score_cm, score_ptx, score_eff, score_atel, score_emph, score_edema, score_pleural, score_fibrosis)
     if max_score == score_cm:
         heatmap = result['cardiomegaly']['heatmap']
     elif max_score == score_ptx:
         heatmap = result['pneumothorax']['heatmap']
     elif max_score == score_eff:
         heatmap = result['effusion']['heatmap']
-    else:
+    elif max_score == score_atel:
         heatmap = result['atelectasis']['heatmap']
+    elif max_score == score_emph:
+        heatmap = result['emphysema']['heatmap']
+    elif max_score == score_edema:
+        heatmap = result['edema']['heatmap']
+    elif max_score == score_pleural:
+        heatmap = result['pleural_thickening']['heatmap']
+    else:
+        heatmap = result['fibrosis']['heatmap']
 
     # 히트맵 이미지가 올바르게 생성되었는지 확인
     if heatmap is None:

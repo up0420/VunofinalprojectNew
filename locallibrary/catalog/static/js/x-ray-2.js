@@ -27,6 +27,7 @@ let originalImageSrc = '';
 
 function heatmap() {
     const mainImage = document.getElementById('main-image');
+    const errorMessage = document.getElementById('error-message');
 
     if (!isHeatmapVisible) {
         originalImageSrc = mainImage.src; // 현재 이미지 소스를 저장합니다
@@ -56,16 +57,20 @@ function heatmap() {
                 console.log('Heatmap received successfully');
                 mainImage.src = `data:image/png;base64,${data.heatmap}`;
                 isHeatmapVisible = true;
+                errorMessage.textContent = ''; // 오류 메시지를 지웁니다
             } else {
                 console.error('히트맵 생성 오류:', data.error);
+                errorMessage.textContent = '유의한 병변이 없습니다.';
             }
         })
         .catch(error => {
             console.error('Fetch error:', error);
+            errorMessage.textContent = '유의한 병변이 없습니다.';
         });
     } else {
         mainImage.src = originalImageSrc; // 원본 이미지로 되돌립니다
         isHeatmapVisible = false;
+        errorMessage.textContent = ''; // 오류 메시지를 지웁니다
     }
 }
 
