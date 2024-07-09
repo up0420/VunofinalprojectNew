@@ -670,3 +670,36 @@ function setupSubmitButton() {
 }
 
 
+//Heatmap
+var heatmapActive = false;
+var originalImageSrc = '';
+function toggleHeatmap() {
+    
+    if (heatmapActive) {
+        $('#main-image').attr('src', originalImageSrc);
+        heatmapActive = false;
+    } else {
+        var imagePath = $('#main-image').attr('src');
+        originalImageSrc = imagePath;
+
+        $.ajax({
+            url: '/catalog/generate_heatmap/',  // Correct URL
+            type: 'POST',
+            data: {
+                image_path: imagePath,
+                csrfmiddlewaretoken: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.heatmap_path) {
+                    $('#main-image').attr('src', response.heatmap_path);
+                    heatmapActive = true;
+                } else {
+                    console.error('Heatmap generation failed.');
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+}

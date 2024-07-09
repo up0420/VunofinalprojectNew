@@ -6,9 +6,14 @@
     <title>X-Ray Analysis</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/x-ray-2.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.3.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <meta name="csrf-token" content="{{ csrf_token }}">
+    <form id="image-upload-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="image-input" accept="image/*" style="display:none;">
+    </form>
 </head>
 
 <body>
@@ -18,18 +23,19 @@
         <span>CHEST MATE</span>
     </div>
 
-    <!-- x-ray image area -->
     <div class="container">
         <div class="image-gallery">
             <div class="main-container">
                 <p style="display: none;">Patient ID: <span id="patient-id">{{ patient.PAT_ID }}</span></p>
-                <img id="main-image" src="">
+                <img id="main-image" src="" data-heatmap-active="false">
                 <canvas id="drawing-canvas"></canvas>
             </div>
             <div>
-                <input type="file" id="image-input" accept="image/*" style="display:none;">
+                <form id="image-upload-form" enctype="multipart/form-data">
+                    <input type="file" id="image-input" accept="image/*" style="display:none;">
+                </form>
                 <button id="add-image">Add</button>
-                <button id="heatmap" onclick="heatmap()">Heatmap</button>
+                <button id="heatmap" onclick="toggleHeatmap()">Heatmap</button>
                 <button id="analysis" onclick="updateBar()">Analysis</button>
                 <button id="save-image">Save</button>
             </div>
@@ -41,7 +47,6 @@
             </div>
         </div>
 
-        <!-- x-ray 크기 조절 등 area -->
         <div class="toolbar">
             <i class="fi fi-sr-zoom-in" id="zoom-in-icon" aria-label="Zoom In"></i>
             <i class="fi fi-sr-zoom-out" id="zoom-out-icon" aria-label="Zoom Out"></i>
@@ -57,7 +62,6 @@
             <input type="range" id="contrast-slider" min="50" max="170" value="100" style="writing-mode: vertical-lr; direction: rtl">
         </div>
 
-        <!-- 진단 area -->
         <div class="diagnosis-panel">
             <div class="diagnosis-header">Diagnosis of Lesions</div>
             <div class="opinion-title">AI Opinion</div>
@@ -105,6 +109,7 @@
             </div>
         </div>
     </div>
+
     <script src="{% static 'js/x-ray-2.js' %}"></script>
 </body>
 

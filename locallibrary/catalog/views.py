@@ -7,10 +7,17 @@ from .models import XImage, Patient
 import os
 from .inference import run_inference, ChestMateRunner  # 여기서 main 함수를 불러옵니다
 from django.conf import settings
+<<<<<<< HEAD
 from datetime import datetime
 import logging
 import cv2
 import base64
+=======
+import base64
+from io import BytesIO
+from PIL import Image
+import cv2
+>>>>>>> 5a00a432b5dd88bbe583084db83e82273fae9347
 
 
 # def patient_xrays(request, pat_id):
@@ -626,3 +633,46 @@ def get_ximage_id(request):
         return JsonResponse({'success': False, 'error': 'XImage not found'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+@csrf_exempt
+def generate_heatmap(request):
+    if request.method == 'POST':
+        image_path = request.POST.get('image_path')
+        static_image_path = os.path.join(settings.MEDIA_ROOT, 'ximages', os.path.basename(image_path))
+        print('경로' , static_image_path)
+        if image_path:
+            try:
+                # 모델 경로 설정
+                path_to_weight = 'C:/VunofinalprojectNew/locallibrary/catalog/model_cmptx.pth'
+
+                # ChestMateRunner 인스턴스 생성
+                runner = ChestMateRunner(path_to_weight)
+
+                # 이미지 처리 및 heatmap 생성
+                outputs = runner.run(static_image_path)
+                
+                # heatmap 저장 경로 설정
+                heatmap_path = f"{os.path.splitext(static_image_path)[0]}_heatmap.jpg"
+                cv2.imwrite(heatmap_path, outputs['cardiomegaly']['heatmap'])
+
+                return JsonResponse({'heatmap_path': heatmap_path, 'outputs': outputs})
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=500)
+        else:
+            return JsonResponse({'error': 'No image path provided'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def analyze_image(request):
+    image_path = request.GET.get('image_path')
+    if image_path:
+        # 이미지의 상대 경로 생성 및 절대 경로로 변환
+        static_image_path = os.path.join(settings.MEDIA_ROOT, 'ximages', os.path.basename(image_path))
+        print('경로' , static_image_path)
+        
+        model_path = os.path.join(settings.BASE_DIR, 'catalog', 'age.onnx')
+        result = run_inference(model_path, static_image_path)
+        return JsonResponse({'result': result})
+    else:
+        return JsonResponse({'error': 'No image path provided'}, status=400)
